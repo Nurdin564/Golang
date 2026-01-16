@@ -306,4 +306,6 @@ func logicY() error {
     // return nil
 }
 
-// func userProfile(user string)
+func gateWay() int {
+    return 80
+}
