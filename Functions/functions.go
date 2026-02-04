@@ -3,8 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"log"
-
 	// "log"
 	"math"
 	"math/rand"
@@ -38,8 +36,8 @@ func main(){
 
     // divide(10, 2)
 
-    // fn()
-    // fn1()
+    fn()
+    fn1()
 
     // defer handlePanic()
     // riskyFunction()
@@ -65,12 +63,38 @@ func main(){
     //     fmt.Println("result of operation:", data)
     // }
 
-    a, b := 10.0, 0.0
-    result, err := calculate2(a, b)
-    if err != nil {
-        log.Fatalf("unable to calculate %s\n", err)
-    }
-    fmt.Println("result is:", result)
+    // a, b := 10.0, 0.0
+    // result, err := calculate2(a, b)
+    // if err != nil {
+    //     log.Fatalf("unable to calculate %s\n", err)
+    // }
+    // fmt.Println("result is:", result)
+
+    // fmt.Println(userProfile("44"))
+
+    // ruFn, err := helloFactory("ru")
+    // if err != nil {
+    //     log.Fatalf("helloFactory error: %s", err)
+    // }
+    // ruFn("Андрей")
+
+    // enFn, err := helloFactory("en")
+    // if err != nil {
+    //     log.Fatalf("helloFactory error: %s", err.Error())
+    // }
+    // enFn("John")
+
+    // frFn, err := helloFactory("fr")
+    // if err != nil {
+    //     log.Fatalf("helloFactory error: %s", err)
+    // }
+    // frFn("Adrian")
+
+    add := adder(10)
+    fmt.Println(add(5))
+    fmt.Println(add(10))
+
+
 }
 
 
@@ -306,6 +330,78 @@ func logicY() error {
     // return nil
 }
 
-func gateWay() int {
-    return 80
+
+/*
+Вам необходимо реализовать функцию userProfile, которая будет обрабатывать информацию о пользователе на основе его идентификатора.
+Описание функции
+    Функция userProfile возвращает информацию о пользователе.
+Параметры:
+    id (тип string) — идентификатор пользователя.
+Возвращаемые значения:
+    string — информация о пользователе.
+    error — ошибка, если она произошла; если ошибки не было, необходимо вернуть nil.
+Алгоритм работы функции
+    Внутри функции userProfile вызовите уже реализованную функцию fetchUserInfo(id string) (int, error), которая принимает идентификатор пользователя, а возвращает его баланс (в копейках) и ошибку, если таковая имеется.
+    Если fetchUserInfo вернула ошибку, то верните ошибку и из userProfile, обернув её в строку: "fetch error: [ОШИБКА_ИЗ_fetchUserInfo]".
+Если fetchUserInfo вернула данные без ошибки, то необходимо выполнить следующие действия:
+    Переведите баланс (в копейках) в рубли с копейками (тип float64).
+    Верните сообщение в формате: "Пользователь с id [ID_ПОЛЬЗОВАТЕЛЯ] имеет на счету [БАЛАНС] руб.".
+*/
+func userProfile(id string) (string, error) {
+    balance, err := fetchUserInfo(id)
+    if err != nil {
+        return "", fmt.Errorf("fetch error: %w", err)
+    }
+    rubles := float64(balance) / 100
+    result := fmt.Sprintf("Пользователь с id %s имеет на счету %.2f руб.", id, rubles)
+    return result, nil
+    
+}
+
+func fetchUserInfo(id string) (int, error) {
+    return 1100000, nil
+}
+
+
+
+func helloFactory(lang string) (func(name string), error) {
+    var message string
+    switch lang {
+    case "ru":
+        message = "Привет %s!\n"
+    case "en":
+        message = "Hello %s!\n"
+    default:
+        return nil, fmt.Errorf("lang %s not supported", lang)
+    }
+
+    return func(name string) {
+        fmt.Printf(message, name)
+    }, nil
+}
+
+/*
+Создание функции-замыкания
+    Ваша задача — реализовать функцию, которая будет возвращать замыкание. 
+    Это замыкание должно принимать целое число и добавлять его к сумме, которая хранится внутри замыкания.
+Условия задачи
+    Создайте функцию adder, которая принимает одно целое число n в качестве аргумента.
+    Функция должна возвращать другую функцию, которая также принимает одно целое число x, 
+    данное число необходимо добавлять к сумме, которая сохраняется между вызовами с помощью вложенной функции, и возвращает новую сумму.
+    При первом вызове замыкания сумма должна быть равна n + x, а при последующих вызовах — сумма предыдущего результата и нового x.
+Пример использования
+    add := adder(10) // Создаем замыкание с начальным значением 10
+    fmt.Println(add(5)) // Ожидаемый результат: 15
+    fmt.Println(add(10)) // Ожидаемый результат: 25                 
+Подсказка
+    Не забудьте, что замыкание должно иметь доступ к этой переменной, а значит замыкание мы должны создавать внутри функции adder.
+    Используйте переменную внутри функции adder, чтобы хранить текущее значение суммы.
+    Не нужно создавать функцию main, все уже реализовано за вас, вам необходимо лишь создать функцию adder.
+*/
+func adder(n int) (func(x int) int) {
+    sum := n
+    return func(x int) int {
+        sum += x
+        return sum
+    }
 }
