@@ -1,9 +1,13 @@
 package main
 
 import (
+	// "bufio"
 	"errors"
 	"fmt"
 	"log"
+	// "os"
+	"strconv"
+	// "log"
 	"math"
 	"math/rand"
 	"strings"
@@ -36,8 +40,8 @@ func main(){
 
     // divide(10, 2)
 
-    fn()
-    fn1()
+    // fn()
+    // fn1()
 
     // defer handlePanic()
     // riskyFunction()
@@ -72,29 +76,101 @@ func main(){
 
     // fmt.Println(userProfile("44"))
 
-    ruFn, err := helloFactory("ru")
-    if err != nil {
-        log.Fatalf("helloFactory error: %s", err)
+    // ruFn, err := helloFactory("ru")
+    // if err != nil {
+    //     log.Fatalf("helloFactory error: %s", err)
+    // }
+    // ruFn("Андрей")
+
+    // enFn, err := helloFactory("en")
+    // if err != nil {
+    //     log.Fatalf("helloFactory error: %s", err.Error())
+    // }
+    // enFn("John")
+
+    // frFn, err := helloFactory("fr")
+    // if err != nil {
+    //     log.Fatalf("helloFactory error: %s", err)
+    // }
+    // frFn("Adrian")
+
+    // add := adder(10)
+    // fmt.Println(add(5))
+    // fmt.Println(add(10))
+
+    // fmt.Println(sumOfDigits(-4728))
+    // fmt.Println(sumOfDigits(2222222222))
+
+    // result, err := run()
+    // if err != nil {
+    //     log.Fatalf("run error %s", err.Error())
+    // }
+    // fmt.Println("Work result:", result)
+
+    // movePirate(true)
+    // movePirate(false)
+    // movePirate(true)
+    // movePirate(false)
+    // movePirate(false)
+    // movePirate(false)
+    // movePirate(true)
+    // movePirate(false)
+    // movePirate(false)
+    // movePirate(true)
+
+    // fmt.Println()
+    // movePirate1 := newPirateMover()
+    // movePirate1(false)
+    // movePirate1(false)
+    // movePirate1(true)
+    // movePirate1(false)
+    // movePirate1(false)
+    // movePirate1(false)
+    // movePirate1(false)
+    // movePirate1(true)
+    // movePirate1(false)
+    // movePirate1(false)
+
+
+	var score int
+	fmt.Printf("Введите вашу оценку (0-100): ")
+	if _, err := fmt.Scan(&score); err != nil || score <= 0 || score > 100 {
+		log.Fatalf("Incorrect input of score: %s\n", err)
+	}
+    fmt.Println(gradeFunc(&score))
+
+	
+
+	
+
+}
+
+// Затенение переменных
+func run() (string, error) {
+    var val string
+    if x := rand.Intn(100); x < 50 {
+        val, err := createNewValueWith(x)   // вместо := нужно использовать =, а также добавить var err error
+        if err != nil {
+            return "", fmt.Errorf("create value with %d: %w", x, err)
+        }
+        fmt.Println(val)
+    } else {
+        val, err := createDefaultValue()
+        if err != nil {
+            return "", fmt.Errorf("create default value error: %w", err)
+        }
+        fmt.Println(val)
     }
-    ruFn("Андрей")
-
-    enFn, err := helloFactory("en")
-    if err != nil {
-        log.Fatalf("helloFactory error: %s", err.Error())
-    }
-    enFn("John")
-
-    frFn, err := helloFactory("fr")
-    if err != nil {
-        log.Fatalf("helloFactory error: %s", err)
-    }
-    frFn("Adrian")
-
-    add := adder(10)
-    fmt.Println(add(5))
-    fmt.Println(add(10))
+    return val, nil
+}
 
 
+func createNewValueWith(x int) (string, error) {
+    return strconv.Itoa(x), nil
+}
+
+func createDefaultValue() (string, error) {
+    return "-1", nil
 }
 
 
@@ -404,4 +480,140 @@ func adder(n int) (func(x int) int) {
         sum += x
         return sum
     }
+}
+
+
+
+/*
+Вам необходимо написать рекурсивную функцию sumOfDigits, которая принимает одно целое число и возвращает сумму его цифр. 
+Функция должна работать как с положительными, так и с отрицательными числами.
+Пример работы функции
+    sumOfDigits(123)   // Возвращает 6 (1 + 2 + 3)
+    sumOfDigits(-456)  // Возвращает 15 (4 + 5 + 6)
+    sumOfDigits(0)     // Возвращает 0
+*/
+func sumOfDigits(num int) int {
+    if num < 0 {
+        num = -num
+    }
+    if num <= 9 {
+        return num
+    }
+    lastDigit := num/10
+    remaining := num%10
+    return lastDigit + sumOfDigits(remaining)
+}
+
+
+
+
+
+/*
+Перемещение пирата по дороге с ловушками.
+Аррр! Пирату нужно дойти до сокровища, однако, на его пути есть плиты с ловушками. 
+Необходимо вывести все перемещения пирата по плитам. 
+    Реализуйте функцию movePirate, которая принимает один параметр:
+    isTrap (bool): true, если пират наступил на ловушку, и false, если он наступил на безопасную плиту.
+Функция будет выводить в консоль перемещение пирата по плитам, на которой расположены ловушки. 
+    У пирата есть 2 возможности попасть в ловушку и выжить. 
+    Если пират успешно преодолевает все ловушки, необходимо вывести сообщение о его победе. 
+    Если же пират наступит на третью ловушку, то выводится соответствующее сообщение и он умирает, 
+    после чего функция ничего не должна выводить при ее вызове.
+Функция будет вызываться ровно 10 раз, вне зависимости от того, жив пират или мертв.
+*/
+
+var (
+    plate = 0
+    traps = 0
+    isAlive = true
+)
+
+func movePirate(isTrap bool) {
+    if isAlive == false {
+        return
+    }
+
+    plate++
+    fmt.Printf("The pirate moved to plate %d\n", plate)
+
+    if isTrap == true {
+        traps++
+        if traps < 3 {
+            fmt.Println("The pirat is injured")
+        } else {
+            fmt.Println("The pirat was killed")
+            isAlive = false
+            return
+        }
+    }
+
+    if plate == 10 && isAlive == true {
+        fmt.Println("The pirate overcame all the traps")
+    }
+}
+
+
+func newPirateMover() func(isTrap bool) {     // вариант через замыкания
+    tile := 0
+    traps := 0
+    isAlive := true
+
+    return func(isTrap bool) {
+        if !isAlive {
+            return
+        }
+
+        tile++
+        fmt.Printf("Пират переместился на плиту %d\n", tile)
+
+        if isTrap {
+            traps++
+            if traps < 3 {
+                fmt.Println("Пират ранен")
+            } else {
+                fmt.Println("Пират убит")
+                isAlive = false
+                return
+            }
+        }
+
+        if tile == 10 && isAlive {
+            fmt.Println("Пират преодолел все ловушки")
+        }
+    }
+}
+
+
+/*
+Нашему проекту приходится работать с разными учебными заведениями и не всегда система оценок похожа. 
+Необходимо создать программу, которая запрашивает у пользователя оценку в диапазоне от 0 до 100 включительно
+и выводит соответствующую буквенную оценку (A, B, C, D, F).
+Детали
+    Необходимо создать функцию, которая будет запрашивать у пользователя ввод числовой оценки (целое число)
+    в диапазоне от 0 до 100. Необходимо убедиться, что введенное значение находится в указанном диапазоне. 
+    Если значение вне диапазона или введено некорректно, программа должна возвращать ошибку из функции, 
+    а при ее обработке выводить сообщение об ошибке и завершать выполнение.
+В зависимости от введенной оценки, программа должна присвоить ей соответствующую буквенную оценку по следующей шкале:
+90–100: A
+80–89: B
+70–79: C
+60–69: D
+Ниже 60: F
+Создайте функцию, которой мы будем передавать число от 0 до 100 включительно, а она нам будет возвращать буквенную оценку.
+*/
+
+func gradeFunc(num *int) string {
+    if *num >= 90 && *num <= 100 {
+        return "A"
+    }
+    if *num >= 80 && *num <= 89 {
+        return "B"
+    }
+    if *num >= 70 && *num <= 79 {
+        return "C"
+    }
+    if *num >= 60 && *num <= 69 {
+        return "D"
+    }
+    return "F"
 }
