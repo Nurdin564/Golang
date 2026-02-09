@@ -3,7 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
-	// "log"
+	"log"
 	"math"
 	"math/rand"
 	"strings"
@@ -72,23 +72,23 @@ func main(){
 
     // fmt.Println(userProfile("44"))
 
-    // ruFn, err := helloFactory("ru")
-    // if err != nil {
-    //     log.Fatalf("helloFactory error: %s", err)
-    // }
-    // ruFn("Андрей")
+    ruFn, err := helloFactory("ru")
+    if err != nil {
+        log.Fatalf("helloFactory error: %s", err)
+    }
+    ruFn("Андрей")
 
-    // enFn, err := helloFactory("en")
-    // if err != nil {
-    //     log.Fatalf("helloFactory error: %s", err.Error())
-    // }
-    // enFn("John")
+    enFn, err := helloFactory("en")
+    if err != nil {
+        log.Fatalf("helloFactory error: %s", err.Error())
+    }
+    enFn("John")
 
-    // frFn, err := helloFactory("fr")
-    // if err != nil {
-    //     log.Fatalf("helloFactory error: %s", err)
-    // }
-    // frFn("Adrian")
+    frFn, err := helloFactory("fr")
+    if err != nil {
+        log.Fatalf("helloFactory error: %s", err)
+    }
+    frFn("Adrian")
 
     add := adder(10)
     fmt.Println(add(5))

@@ -63,7 +63,7 @@ func main() {
 	fmt.Println(randomFloat1)
 
 
-	fmt.Println(math.Pow(2, 3))
+	fmt.Println(math.Pow(2, 3))   // Returns 2^3 = 8.0
 	fmt.Println(math.E)
 	fmt.Println(math.Sqrt(16))
 	fmt.Println(math.Log(5))
