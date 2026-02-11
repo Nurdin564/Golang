@@ -4,7 +4,7 @@ import (
 	// "bufio"
 	"errors"
 	"fmt"
-	"log"
+	// "log"
 	// "os"
 	"strconv"
 	// "log"
@@ -132,17 +132,70 @@ func main(){
     // movePirate1(false)
 
 
-	var score int
-	fmt.Printf("Введите вашу оценку (0-100): ")
-	if _, err := fmt.Scan(&score); err != nil || score <= 0 || score > 100 {
-		log.Fatalf("Incorrect input of score: %s\n", err)
-	}
-    fmt.Println(gradeFunc(&score))
+	// var score int
+	// fmt.Printf("Введите вашу оценку (0-100): ")
+	// if _, err := fmt.Scan(&score); err != nil || score <= 0 || score > 100 {
+	// 	log.Fatalf("Incorrect input of score: %s\n", err)
+	// }
+    // fmt.Println(gradeFunc(&score))
 
-	
+    // score, err := getScore()
+    // if err != nil {
+    //     fmt.Println(err)
+    //     return
+    // }
 
-	
+    // letterGrade := getLetterGrade(score)
+    // fmt.Println("Your letter grade is:", letterGrade)
 
+
+    // fmt.Println(Attack())
+
+    // attackWithDamageBust := DamageBoostDecorator(Attack)
+    // fmt.Println(attackWithDamageBust())
+
+    // attackWithCriticalHit := CriticalHitDecorator(Attack)
+    // fmt.Println(attackWithCriticalHit())
+
+    // attackWithSlowEffect := SlowEffectDecorator(Attack)
+    // fmt.Println(attackWithSlowEffect())
+
+
+    attackWithDamageBust := DamageBoostDecorator(Attack)
+    attackWithCriticalHit := CriticalHitDecorator(attackWithDamageBust)
+    attackWithSlowEffect := SlowEffectDecorator(attackWithCriticalHit)
+    fmt.Println(attackWithSlowEffect())
+
+}
+
+
+func getScore() (int, error) {
+    var score int
+    fmt.Printf("Input your grade (0-100): ")
+    if _, err := fmt.Scan(&score); err != nil {
+        return 0, fmt.Errorf("Input error: %w", err)
+    }
+
+    if score < 0 || score > 100 {
+        return 0, fmt.Errorf("grade needs to be from 0 to 100")
+    }
+
+    return score, nil
+}
+
+func getLetterGrade(score int) string {
+    switch {
+    case score >= 90:
+        return "A"
+    case score >= 80:
+        return "B"
+    case score >= 70:
+        return "C"
+    case score >= 60:
+        return "D"
+    default:
+        return "F"
+    }
 }
 
 // Затенение переменных
@@ -616,4 +669,52 @@ func gradeFunc(num *int) string {
         return "D"
     }
     return "F"
+}
+
+
+/*
+Необходимо создать некоторые функции для текстовой ролевой игры, в которой игроки могут использовать различные способности. 
+Ваша задача заключается в реализации декораторов, которые добавляют уникальные эффекты к базовым способностям персонажа, используя только функции.
+Базовая способность
+    Реализуйте функцию Attack() string, которая будет представлять базовую способность персонажа и возвращать строку "Атака выполнена!".
+Декоратор увеличения урона
+    Создайте функцию DamageBoostDecorator(attackFunc func() string) func() string, которая принимает функцию атаки и возвращает новую функцию. 
+    Эта новая функция должна возвращать сообщение, которое должно быть собрано (конкатенацией, в порядке упоминания) из двух частей:
+    Строка - "Вам улыбнулась удача, нанесение урона увеличено на 10%!". 
+    Результат работы функции базовой атаки.
+Декоратор критического удара
+    Создайте функцию CriticalHitDecorator(attackFunc func() string) func() string, которая добавляет шанс критического удара. 
+    Функция возвращает новую функцию, которая будет возвращать сообщение. 
+    Сообщение зависит от случайности - если критический удар происходит (например, с вероятностью 25%), 
+    возвращайте строку "Критический удар! Урон удвоен!", после чего необходимо конкатенировать результат вызова базовой атаки. 
+    В противном случае, если критического удара не было, нужно просто вернуть результат базовой функции атаки.
+Декоратор эффекта замедления
+    Создайте функцию SlowEffectDecorator(attackFunc func() string) func() string, которая добавляет эффект замедления к атаке. 
+    Необходимо вернуть результат базовой атаки, после чего добавить (конкатенацией) строку "Цель замедлена на 2 хода!".
+Комбинирование декораторов
+    Позвольте игроку комбинировать декораторы. Например, игрок может использовать атаку с увеличением урона и критическим ударом одновременно.
+*/
+func Attack() string {
+    return "The attack is completed!"
+}
+
+func DamageBoostDecorator(attackFunc func() string) func() string {
+    return func() string {
+        return "Вам улыбнулась удача, нанесение урона увеличено на 10%! " + attackFunc()
+    }
+}
+
+func CriticalHitDecorator(attackFunc func() string) func() string {
+    return func() string {
+        if rand.Float64() < 0.25 {
+            return "Критический удар! Урон удвоен! " + attackFunc()
+        }
+        return attackFunc()
+    }
+}
+
+func SlowEffectDecorator(attackFunc func() string) func() string {
+    return func() string {
+        return attackFunc() + " Цель замедлена на 2 хода!"
+    }
 }
