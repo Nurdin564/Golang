@@ -132,17 +132,23 @@ func main(){
     // movePirate1(false)
 
 
-	var score int
-	fmt.Printf("Введите вашу оценку (0-100): ")
-	if _, err := fmt.Scan(&score); err != nil || score <= 0 || score > 100 {
-		log.Fatalf("Incorrect input of score: %s\n", err)
-	}
-    fmt.Println(gradeFunc(&score))
+	// var score int
+	// fmt.Printf("Введите вашу оценку (0-100): ")
+	// if _, err := fmt.Scan(&score); err != nil || score <= 0 || score > 100 {
+	// 	log.Fatalf("Incorrect input of score: %s\n", err)
+	// }
+    // fmt.Println(gradeFunc(&score))
 
 	
 
 	
 
+}
+
+func getScore() (int, error) {
+    var score int
+    fmt.Printf("Input your grade (0-100): ")
+    
 }
 
 // Затенение переменных
