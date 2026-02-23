@@ -384,12 +384,7 @@ func main() {
 	default:
 		fmt.Printf("The product %q didn't find.\n", input)
 	}
-	
-
-
-
-	
-	
-
 
 }
+
+

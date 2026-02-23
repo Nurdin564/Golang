@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"errors"
-	"os"
+	// "os"
 )
 
 func main() {
@@ -64,20 +64,40 @@ func main() {
 	// }
 
 
-	for range 100 {
-		random = rand.Intn(100) + 1
-		guesses = 0
-		result := play()
-		if result != random {
-			fmt.Printf("Неверный ответ. Было загадано число %d, а в ответе получили число %d", random, result)
-			os.Exit(-1)
-		}
-	}
+	// for range 1 {
+	// 	random = rand.Intn(100) + 1
+	// 	guesses = 0
+		
+	// 	result := play()
+	// 	fmt.Printf("Загадано: %d, Угадано: %d\n", random, result)
+		
+	// 	if result != random {
+	// 		fmt.Printf("Неверный ответ. Было загадано число %d, а в ответе получили число %d", random, result)
+	// 		os.Exit(-1)
+	// 	}	
+	// }
 
-	fmt.Println(play())
+	// for i := 1; i <= 3; i++ {
+	// 	for j := 1; j <= 2; j++ {
+	// 		fmt.Printf("i: %d, j: %d\n", i, j)
+	// 	}
+	// }
 
+	// for i := 0; i < 3; i++ {
+	// 	for j := 0; j < 3; j++ {
+	// 		if i == 1 && j == 2 {
+	// 			break
+	// 		}
+	// 		fmt.Printf("i: %d, j: %d\n", i, j)
+	// 	}
+	// }
+
+	printTable(5)
 
 }
+
+
+
 
 
 /*
@@ -98,20 +118,16 @@ func main() {
 У вашей функции play, которую вам необходимо реализовать, есть всего 6 попыток, чтобы отгадать число, 
 так как функция guess начнет возвращать ошибку после 6 попытки. За 6 вызовов можно со 100% вероятностью отгадать загаданное число. 
 Такая же тактика может использоваться для поиска значений в отсортированном ряде данных, например в базах данных.
-	У вашей функции play, которую вам необходимо реализовать, есть всего 6 попыток, чтобы отгадать число, 
-	так как функция guess начнет возвращать ошибку после 6 попытки. За 6 вызовов можно со 100% вероятностью 
-	отгадать загаданное число. Такая же тактика может использоваться для поиска значений в отсортированном ряде данных, 
-	например в базах данных.
 */
 var guesses int
 var random int
 
 func guess(num int) (int, error) {
 	if guesses >= 6 {
-		return 0, errors.New("too many attempts")
+		return 0, errors.New("too many attemts")
 	}
 	guesses++
-	if num > random {
+	if num > random {       // if mid > random
 		return -1, nil
 	}
 	if num < random {
@@ -126,13 +142,16 @@ func play() int {
 
 	for guesses < 6 {
 		mid := (left + right) / 2
+        fmt.Printf("Попытка %d: mid=%d (диапазон [%d, %d])\n", guesses+1, mid, left, right)
 
 		res, err := guess(mid)
 		if err != nil {
+			fmt.Println("Ошибка:", err)
 			break
 		}
 
 		if res == 0 {
+			fmt.Println("Угадали!")
 			return mid
 		}
 
@@ -149,8 +168,6 @@ func play() int {
 	// остаётся единственный возможный вариант
 	return left
 }
-
-
 
 
 /*
@@ -247,6 +264,30 @@ func PrintReplaced1(s string) {
 	fmt.Println(string(runes))
 }
 
+
+/*
+Таблица умножения
+	Хочется вывести таблицу умножения для ребенка. Необходимо написать функцию printTable, 
+	которая принимает число (назовем параметр num) и выводит таблицу умножения num x num.
+Используйте вложенные циклы и форматируйте вывод в виде таблицы, 
+между примерами отступ должен состоять из одного знака табуляции, в конце каждой строки табуляции быть не должно.
+	Sample Output 1: (3)
+1 x 1 = 1	1 x 2 = 2	1 x 3 = 3
+2 x 1 = 2	2 x 2 = 4	2 x 3 = 6
+3 x 1 = 3	3 x 2 = 6	3 x 3 = 9
+*/
+func printTable(num int) {
+	for i := 1; i <= num; i++ {
+		for j := 1; j <= num; j++ {
+			fmt.Printf("%d x %d = %d", i, j, i*j)
+
+			if j < num {
+				fmt.Print("\t")
+			}
+		}
+		fmt.Println()
+	}
+}
 
 
 
