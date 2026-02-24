@@ -1,9 +1,9 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
-	"errors"
 	// "os"
 )
 
@@ -96,8 +96,18 @@ func main() {
 
 	// printDiamond(2)
 
+	for {
+		playGame()
 
-
+		var playAgain string
+		fmt.Printf("Want you play again? (if yes, write word \"yes\"): ")
+		fmt.Scanln(&playAgain)
+		if playAgain != "yes" {
+			fmt.Println("Thanks for play! Bye!")
+			break
+		}
+	}
+	
 }
 
 /*
@@ -141,7 +151,20 @@ func main() {
 	Правильно! Вы угадали число с 5 попытки.
 	Хотите сыграть еще раз? (если хотите, напишите слово да): нет
 	Спасибо за игру! До свидания!
-*/
+	*/
+
+func generateRandomNumber(min, max int) int {
+	return rand.Intn(max-min+1) + min
+}
+
+func playGame() {
+	min := 1
+	max := 100
+	randomNumber := generateRandomNumber(min, max)
+	fmt.Println(randomNumber)
+}
+
+
 
 
 
