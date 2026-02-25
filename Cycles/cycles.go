@@ -4,6 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
+	"os"
+	"strconv"
+	"strings"
 	// "os"
 )
 
@@ -97,13 +100,20 @@ func main() {
 	// printDiamond(2)
 
 	for {
-		playGame()
+		if err := playGame(); err != nil {
+			if err == ErrUserEndGame {
+				printEndGameMassage()
+				break
+			}
+			fmt.Printf("An error occured during the game: %v", err)
+			os.Exit(1)
+		}
 
 		var playAgain string
 		fmt.Printf("Want you play again? (if yes, write word \"yes\"): ")
 		fmt.Scanln(&playAgain)
 		if playAgain != "yes" {
-			fmt.Println("Thanks for play! Bye!")
+			printEndGameMassage()
 			break
 		}
 	}
@@ -153,15 +163,63 @@ func main() {
 	Спасибо за игру! До свидания!
 	*/
 
+var ErrUserEndGame = errors.New("User finished game")
+
+func printEndGameMassage() {
+	fmt.Println("Thanks for play! Bye!")
+}
+
 func generateRandomNumber(min, max int) int {
 	return rand.Intn(max-min+1) + min
 }
 
-func playGame() {
+func getUserInput() (int, error) {
+	var input string
+	fmt.Printf("Your assumption (or write \"exit\" to finish): ")
+	fmt.Scanln(&input)
+
+	if strings.ToLower(input) == "exit" {
+		return 0, ErrUserEndGame
+	}
+	
+	number, err := strconv.Atoi(input)
+	if err != nil {
+		return 0, fmt.Errorf("invalid input: %w", err)
+	}
+	return number, nil
+	
+
+}
+
+func playGame() error {
 	min := 1
 	max := 100
 	randomNumber := generateRandomNumber(min, max)
-	fmt.Println(randomNumber)
+	attempts := 0
+
+	fmt.Println("Компьютер загадал случайное число от 1 до 100 включительно. Угадайте его!")
+
+	for {
+		input, err := getUserInput()
+		if err != nil {
+			if err == ErrUserEndGame {
+				return err
+			}
+			fmt.Println("Incorrect input. Please, write integer.")
+			continue
+		}
+		attempts++
+
+		if input < randomNumber {
+			fmt.Println("The hidden number is greater.")
+		} else if input > randomNumber {
+			fmt.Println("The hidden number is less.")
+		} else {
+			fmt.Printf("Right! You guessed a number since %d attempt.\n", attempts)
+			break
+		}
+	}
+	return nil
 }
 
 
