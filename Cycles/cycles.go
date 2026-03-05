@@ -1,12 +1,16 @@
 package main
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
+
+	// "log"
 	"math/rand"
 	"os"
 	"strconv"
 	"strings"
+	"unicode"
 	// "os"
 )
 
@@ -99,26 +103,98 @@ func main() {
 
 	// printDiamond(2)
 
-	for {
-		if err := playGame(); err != nil {
-			if err == ErrUserEndGame {
-				printEndGameMassage()
-				break
-			}
-			fmt.Printf("An error occured during the game: %v", err)
-			os.Exit(1)
-		}
+	// for {
+	// 	if err := playGame(); err != nil {
+	// 		if err == ErrUserEndGame {
+	// 			printEndGameMassage()
+	// 			break
+	// 		}
+	// 		fmt.Printf("An error occured during the game: %v", err)
+	// 		os.Exit(1)
+	// 	}
 
-		var playAgain string
-		fmt.Printf("Want you play again? (if yes, write word \"yes\"): ")
-		fmt.Scanln(&playAgain)
-		if playAgain != "yes" {
-			printEndGameMassage()
-			break
+	// 	var playAgain string
+	// 	fmt.Printf("Want you play again? (if yes, write word \"yes\"): ")
+	// 	fmt.Scanln(&playAgain)
+	// 	if playAgain != "yes" {
+	// 		printEndGameMassage()
+	// 		break
+	// 	}
+	// }
+
+	input, err := GetInput()
+	if err != nil {
+		fmt.Printf("Error from getting text: %v\n", err)
+		os.Exit(1)
+	}
+
+	DisplayResults(CountCharacters(input))
+// 	letters, digits, spaces, punctuation := CountCharacters(input)
+// 	DisplayResults(letters, digits, spaces, punctuation)
+}
+
+/*
+Анализ строки
+	Ваша задача — разработать программу, которая будет анализировать текст, введенный пользователем. 
+	Программа должна выполнять несколько ключевых функций, позволяющих получить различные статистические данные о тексте.
+Ввод текста
+	Создайте функцию GetInput() (string, error), которая запрашивает у пользователя ввод текста и возвращает его для дальнейшего анализа. 
+	Если функция вернет ошибку, программу необходимо завершить.
+Подсчет символов
+	Реализуйте функцию CountCharacters(text string) (letters, digits, spaces, punctuation int), которая принимает текст и 
+	возвращает количество:
+	букв (letters)
+	цифр (digits)
+	пробелов (spaces)
+	знаков препинания (punctuation)
+Вывод результатов
+	Напишите функцию DisplayResults(letters, digits, spaces, punctuation int), которая принимает результаты анализа и 
+	выводит их на экран в удобочитаемом формате. Например:
+Количество букв: 50
+Количество цифр: 10
+Количество пробелов: 5
+Количество знаков препинания: 3
+*/
+
+func GetInput() (string, error) {
+	scanner := bufio.NewScanner(os.Stdin)
+
+	fmt.Print("Input some text: ")
+	if !scanner.Scan() {
+		fmt.Println()
+		if err := scanner.Err(); err != nil {
+			return  "", fmt.Errorf("scan error: %w", err)
+		}
+		return "", errors.New("unable to read input")
+	}
+
+	return scanner.Text(), nil
+}
+
+func CountCharacters(text string) (letters, digits, spaces, punctuation int) {
+	for _, char := range text {
+		switch {
+		case unicode.IsLetter(char):
+			letters++
+		case unicode.IsDigit(char):
+			digits++
+		case unicode.IsSpace(char):
+			spaces++
+		case unicode.IsPunct(char):
+			punctuation++
 		}
 	}
-	
+	return
 }
+
+func DisplayResults(letters, digits, spaces, punctuation int) {
+	fmt.Printf("Count of letters: %d\n", letters)
+	fmt.Printf("Count of digits: %d\n", digits)
+	fmt.Printf("Count of spaces: %d\n", spaces)
+	fmt.Printf("Count of punctuations: %d\n", punctuation)
+}
+
+
 
 /*
 Игра "Угадай число"
