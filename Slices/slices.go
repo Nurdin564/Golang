@@ -158,22 +158,123 @@ func main() {
 	// fmt.Println(subSlice)  // [2 243 4]
 	// fmt.Println(original) // [1 2 243 4 5]
 
-	numbers := []int{10, 20, 30, 40, 50}
+	// numbers := []int{10, 20, 30, 40, 50}
 
-	ptr := &numbers[2]
-	fmt.Println("Value:", *ptr)  // 30
-	fmt.Println("Address:", ptr)  // 0x8010
+	// ptr := &numbers[2]
+	// fmt.Println("Value:", *ptr)  // 30
+	// fmt.Println("Address:", ptr)  // 0x8010
 
-	numbers = append(numbers, 60)
+	// numbers = append(numbers, 60)
 
-	ptr2 := &numbers[2]
-	fmt.Println("Value:", *ptr2)  // 30
-	fmt.Println("Adress:", ptr2)  // 0x20b0
+	// ptr2 := &numbers[2]
+	// fmt.Println("Value:", *ptr2)  // 30
+	// fmt.Println("Adress:", ptr2)  // 0x20b0
 
-	*ptr = 290  // does not changed
-	fmt.Println(numbers)  // after append it will be new slice [10 20 30 40 50 60], cause cap was 5 and after adding it will be another slice
+	// *ptr = 290  // does not changed
+	// fmt.Println(numbers)  // after append it will be new slice [10 20 30 40 50 60], cause cap was 5 and after adding it will be another slice
+
+	// slice := []int{1, 2, 3}
+	// value := 0
+	// slice = append([]int{value}, slice...)  // добавление в началао
+	// fmt.Println(slice)  // [0 1 2 3]
+
+	// slice := []int{1, 2, 4, 5}
+	// index := 2
+	// value := 3
+
+	// // Adding to middle
+	// // best case
+	// before := slice[:index]
+	// after := append([]int{value}, slice[index:]...)  // добавление в середину
+	// slice = append(before, after...)
+	// fmt.Println(slice)  // [1 2 3 4 5]
+
+
+
+	// worst case (don't add element at first part of slice cause 4 will be 3)
+	// before := append(slice[:index], value)
+	// fmt.Println(before, slice)  // [1 2 3] [1 2 3 5]
+	// after := slice[index:]
+	// slice = append(before, after...)
+	// fmt.Println(slice)  // [1 2 3 3 5]
+
+	slice := []int{23, 444, 0, -3, 12, 8, 60, 3}
+	fmt.Println(PlayWithSlice(slice))
+
+	fmt.Println(insertElement([]int{1,2,3,4,5,6,7,89,9}, 5, 5000))
+
+
 
 }
+
+func insertElement(slice []int, pos int, value int) []int {
+	n := len(slice)
+	newSlice := make([]int, n+1)
+	copy(newSlice[:pos], slice[:pos])          // Копируем левую половину
+	newSlice[pos] = value                       // Добавляем новый элемент
+	copy(newSlice[pos+1:], slice[pos:n])       // Копируем правую половину
+	return newSlice
+}
+
+/*
+Необходимо реализовать функцию PlayWithSlice, которая будет принимать слайс целых чисел
+и выполнять с ним несколько операций и возвращать новый слайс целых чисел:
+	Клонирование слайса: Создайте новый слайс, который будет являться клоном переданного слайса. 
+	Все дальнейшие операции должны выполняться только с клоном.
+
+	Вставка числа 100: Найдите первое значение с конца клона, которое больше 10. 
+	После этого значения вставьте число 100. Если такого значения не найдено, этот шаг можно пропустить.
+
+	Вставка числа 500: Если сумма всех чисел в текущем клоне больше 100, добавьте число 500 в конец слайса.
+
+	Вставка числа 1000: Если в оригинальном слайсе четных чисел больше, чем нечетных, вставьте число 1000 в начало клона слайса.
+Функция должна вернуть модифицированный слайс.
+Дополнительные указания
+	Обратите внимание на то, что слайсы в Go передаются по ссылке, 
+	поэтому вам нужно создать новый слайс, чтобы избежать изменения оригинального.
+	Убедитесь, что ваша функция корректно обрабатывает пустые слайсы и слайсы, не содержащие чисел, удовлетворяющих условиям.
+*/
+func PlayWithSlice(arr []int) []int {
+	clone := make([]int, len(arr))
+	copy(clone, arr)
+
+	for i := len(clone) - 1; i >= 0; i-- {
+		if clone[i] > 10 {
+			newSlice := []int{}
+			newSlice = append(newSlice, clone[:i+1]...)
+			newSlice = append(newSlice, 100)
+			newSlice = append(newSlice, clone[i+1:]...)
+			break
+		}
+	}
+
+	sum := 0
+	for _, v := range clone {
+		sum += v
+	}
+
+	if sum > 100 {
+		clone = append(clone, 500)
+	}
+
+	even := 0
+	odd := 0
+	for _, v := range arr {
+		if v%2 == 0 {
+			even++
+		} else {
+			odd++
+		}
+	}
+
+	if even > odd {
+		clone = append([]int{1000}, clone...)
+	}
+
+	return clone
+}
+
+
 
 /*
 Необходимо реализовать функцию intersectSlices, которая будет принимать
