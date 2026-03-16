@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
+	// "slices"
 	// "unicode/utf8"
-
 	// "slices"
 	"strings"
 )
@@ -189,8 +189,6 @@ func main() {
 	// slice = append(before, after...)
 	// fmt.Println(slice)  // [1 2 3 4 5]
 
-
-
 	// worst case (don't add element at first part of slice cause 4 will be 3)
 	// before := append(slice[:index], value)
 	// fmt.Println(before, slice)  // [1 2 3] [1 2 3 5]
@@ -198,39 +196,115 @@ func main() {
 	// slice = append(before, after...)
 	// fmt.Println(slice)  // [1 2 3 3 5]
 
-	slice := []int{23, 444, 0, -3, 12, 8, 60, 3}
-	fmt.Println(PlayWithSlice(slice))
+	// slice := []int{23, 444, 0, -3, 12, 8, 60, 3}
+	// fmt.Println(PlayWithSlice(slice))
 
-	fmt.Println(insertElement([]int{1,2,3,4,5,6,7,89,9}, 5, 5000))
+	// fmt.Println(insertElement([]int{1,2,3,4,5,6,7,89,9}, 5, 5000))
 
+	// slice := []int{1, 2, 3, 4, 5}
+	// fmt.Printf("slice: %v, capacity: %d\n", slice, cap(slice))
 
+	// slice = slice[:len(slice) - 1]
+	// fmt.Printf("slice: %v\n", slice)  // [1 2 3 4]
+
+	// slice = slice[1:]
+	// fmt.Printf("slice: %v\n", slice)  // 2, 3, 4, 5
+
+	// indexToRemove := 2
+	// slice = append(slice[:indexToRemove], slice[indexToRemove+1:]...)
+	// fmt.Printf("slice: %v, capacity: %d\n", slice, cap(slice))  // slice: [1 2 4 5], capacity: 5
+
+	// slice = slices.Clip(slice)
+	// fmt.Printf("slice: %v, capacity: %d\n", slice, cap(slice))  // slice: [1 2 4 5], capacity: 4. But in memory we still have 5 cell
+
+	// newSlice := make([]int, len(slice))
+	// copy(newSlice, slice)
+	// fmt.Printf("slice: %v, capacity: %d\n", newSlice, cap(newSlice))  // slice: [1 2 4 5], capacity: 4
+
+	// arr := []int{1, 2, 3, 4, 5, 6, 11}
+	// fmt.Println(DeletingFromSlice(arr))
+
+	s := []int{1,2,3,4,5}
+	fmt.Println("Original slice:", s)
+	fmt.Println(changeSlice(s))
 
 }
 
+func changeSlice(slice []int) []int {
+	slice[len(slice)-1] = 100
+	slice = append(slice, -1)
+	slice[0] = 500
+	return slice
+}
+
+
+
+/*
+Необходимо создать функцию с названием DeletingFromSlice, которая принимает слайс целых чисел
+и возвращает новый слайс целых чисел. Функция должна выполнять следующие действия:
+	Удалить из принятого слайса последнее значение, если это значение существует и оно больше 10.
+	Удалить значение по индексу 2, если такое значение есть и вместимость слайса больше 5.
+	Удалить первое значение из слайса, если оно присутствует и были удалены значения, указанные в первых двух пунктах.
+	Убрать лишнюю вместимость у слайса.
+Функция должна вернуть полученный слайс.
+*/
+
+func DeletingFromSlice(arr []int) []int {
+	slice := make([]int, len(arr))
+	copy(slice, arr)
+
+	removedLast := false
+	removedSecond := false
+
+	if len(slice) > 0 && slice[len(slice)-1] > 10 {
+		slice = slice[:len(slice)-1]
+		removedLast = true
+	}
+
+	if len(slice) > 2 && cap(slice) > 5 {
+		slice = append(slice[:2], slice[3:]...)
+		removedSecond = true
+	}
+
+	if removedLast && removedSecond && len(slice) > 0 {
+		slice = slice[1:]
+	}
+
+	slice = append([]int{}, slice...)
+	return slice
+}
+
+
+
+
+// Example from comments
 func insertElement(slice []int, pos int, value int) []int {
 	n := len(slice)
 	newSlice := make([]int, n+1)
-	copy(newSlice[:pos], slice[:pos])          // Копируем левую половину
-	newSlice[pos] = value                       // Добавляем новый элемент
-	copy(newSlice[pos+1:], slice[pos:n])       // Копируем правую половину
+	copy(newSlice[:pos], slice[:pos])    // Копируем левую половину
+	newSlice[pos] = value                // Добавляем новый элемент
+	copy(newSlice[pos+1:], slice[pos:n]) // Копируем правую половину
 	return newSlice
 }
 
 /*
 Необходимо реализовать функцию PlayWithSlice, которая будет принимать слайс целых чисел
 и выполнять с ним несколько операций и возвращать новый слайс целых чисел:
-	Клонирование слайса: Создайте новый слайс, который будет являться клоном переданного слайса. 
+
+	Клонирование слайса: Создайте новый слайс, который будет являться клоном переданного слайса.
 	Все дальнейшие операции должны выполняться только с клоном.
 
-	Вставка числа 100: Найдите первое значение с конца клона, которое больше 10. 
+	Вставка числа 100: Найдите первое значение с конца клона, которое больше 10.
 	После этого значения вставьте число 100. Если такого значения не найдено, этот шаг можно пропустить.
 
 	Вставка числа 500: Если сумма всех чисел в текущем клоне больше 100, добавьте число 500 в конец слайса.
 
 	Вставка числа 1000: Если в оригинальном слайсе четных чисел больше, чем нечетных, вставьте число 1000 в начало клона слайса.
+
 Функция должна вернуть модифицированный слайс.
 Дополнительные указания
-	Обратите внимание на то, что слайсы в Go передаются по ссылке, 
+
+	Обратите внимание на то, что слайсы в Go передаются по ссылке,
 	поэтому вам нужно создать новый слайс, чтобы избежать изменения оригинального.
 	Убедитесь, что ваша функция корректно обрабатывает пустые слайсы и слайсы, не содержащие чисел, удовлетворяющих условиям.
 */
@@ -273,8 +347,6 @@ func PlayWithSlice(arr []int) []int {
 
 	return clone
 }
-
-
 
 /*
 Необходимо реализовать функцию intersectSlices, которая будет принимать
