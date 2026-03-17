@@ -2,6 +2,10 @@ package main
 
 import (
 	"fmt"
+	"slices"
+
+	// "sort"
+
 	// "slices"
 	// "unicode/utf8"
 	// "slices"
@@ -224,10 +228,87 @@ func main() {
 	// arr := []int{1, 2, 3, 4, 5, 6, 11}
 	// fmt.Println(DeletingFromSlice(arr))
 
-	s := []int{1,2,3,4,5}
-	fmt.Println("Original slice:", s)
-	fmt.Println(changeSlice(s))
+	// s := []int{1,2,3,4,5}
+	// fmt.Println("Original slice:", s)
+	// fmt.Println(changeSlice(s))
 
+	// strings := []string{"banana", "apple", "cherry"}
+	// slices.Sort(strings)
+	// fmt.Println(strings)
+
+	// numbers := []int{4,2,7,1,3}
+	// slices.SortStableFunc(numbers, func(a, b int) int {
+	// 	return a - b
+	// })
+	// fmt.Println(numbers)
+
+	// slice := [][]int{
+	// 	{3, 1, 4, 1},
+	// 	{2, 2, 2},
+	// 	{5, 0, 6, 3, -8, 1},
+	// 	{4, 6, 8, 2},
+	// }
+	// fmt.Println(magicSort(slice))
+
+
+	numbers := []int{1, 2, 3, 4, 5, 6}
+	newNumbers := slices.Insert(numbers, 2, 90)  // (slice, index, value)
+	fmt.Println(newNumbers)
+
+	fmt.Println(slices.Contains(numbers, 40))
+	contains := slices.ContainsFunc(numbers, func(v int) bool {
+		return v%2 == 0
+	})
+	fmt.Println(contains)
+
+	
+
+}
+
+/*
+Необходимо реализовать функцию magicSort,
+которая принимает двумерный слайс целых чисел и сортирует его по следующим критериям:
+	Внешний слайс должен быть отсортирован по возрастанию суммы чисел в каждом внутреннем слайсе,
+	если слайсы имеют одинаковую сумму, то они должны быть в том же порядке, что и были.
+Каждый внутренний слайс должен быть отсортирован в порядке убывания,
+при этом четные числа должны идти перед нечетными. Ноль идет перед всеми числами.
+*/
+
+func magicSort(arr [][]int) [][]int {
+	for _, s := range arr {
+		slices.SortStableFunc(s, func(a, b int) int {
+			if a == 0 && b != 0 {
+				return -1
+			}
+			if b == 0 && a != 0 {
+				return 1
+			}
+
+			if a%2 == 0 && b%2 != 0 {
+				return -1
+			}
+			if a%2 != 0 && b%2 == 0 {
+				return 1
+			}
+
+			return b - a
+
+		})
+	}
+
+	sum := func(s []int) int {
+		total := 0
+		for _, v := range s {
+			total += v
+		}
+		return total
+	}
+
+	slices.SortStableFunc(arr, func(a, b []int) int {
+		return sum(a) - sum(b)
+	})
+
+	return arr
 }
 
 func changeSlice(slice []int) []int {
@@ -236,8 +317,6 @@ func changeSlice(slice []int) []int {
 	slice[0] = 500
 	return slice
 }
-
-
 
 /*
 Необходимо создать функцию с названием DeletingFromSlice, которая принимает слайс целых чисел
@@ -273,9 +352,6 @@ func DeletingFromSlice(arr []int) []int {
 	slice = append([]int{}, slice...)
 	return slice
 }
-
-
-
 
 // Example from comments
 func insertElement(slice []int, pos int, value int) []int {
