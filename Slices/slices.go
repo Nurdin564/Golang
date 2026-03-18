@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"slices"
+	"unicode/utf8"
 
 	// "sort"
 
@@ -250,19 +252,219 @@ func main() {
 	// }
 	// fmt.Println(magicSort(slice))
 
+	// numbers := []int{1, 2, 3, 4, 5, 6}
+	// newNumbers := slices.Insert(numbers, 2, 90) // (slice, index, value)
+	// fmt.Println(newNumbers)
 
-	numbers := []int{1, 2, 3, 4, 5, 6}
-	newNumbers := slices.Insert(numbers, 2, 90)  // (slice, index, value)
-	fmt.Println(newNumbers)
+	// fmt.Println(slices.Contains(numbers, 40))
+	// contains := slices.ContainsFunc(numbers, func(v int) bool {
+	// 	return v%2 == 0
+	// })
+	// fmt.Println(contains)
 
-	fmt.Println(slices.Contains(numbers, 40))
-	contains := slices.ContainsFunc(numbers, func(v int) bool {
-		return v%2 == 0
-	})
-	fmt.Println(contains)
+	// numbers1 := []int{1, 2, 3, 2, 5}
+	// numbers2 := []int{5, 3, 1, 4, 5}
+	// // compared := slices.Compare(numbers1, numbers2)
+	// compared := slices.CompareFunc(numbers1, numbers2, func(a, b int) int {
+	// 	if a%2 == 1 && b%2 == 1 {
+	// 		return 0
+	// 	}
+	// 	return a - b
+	// })
+	// fmt.Println(compared)
+
+	// combined := slices.Concat(numbers1, numbers2, []int{100, 233})
+	// fmt.Println(combined)
+
+	// fmt.Println(slices.Index(numbers1, 3))
+	// idx := slices.IndexFunc(numbers1, func(v int) bool {
+	// 	return v%2 == 0
+	// })
+	// fmt.Println(idx)
+
+	// fmt.Println(slices.Min(numbers1))
+	// fmt.Println(slices.Max(numbers1))
+
+	// newNumbers := slices.Delete(numbers1, 2, 4)  // from index to index
+	// newNumbers := slices.DeleteFunc(numbers1, func(v int) bool {
+	// 	return v%2 == 0
+	// })
+	// fmt.Println(newNumbers)
+
+	// slices.Reverse(numbers1)
+	// fmt.Println(numbers1)  // если функция ничего не возвращает то нужно отдельно ее задействовать и потом печатать
+
+	// fmt.Println(slices.Repeat(numbers1, 5))
+
+	// newNumbers := slices.Replace(numbers1, 1, 3, 34, 45, 99)
+	// fmt.Println(newNumbers)  // [1 34 45 99 2 5]
+
+	// fmt.Println(slices.Equal(numbers1, numbers2))
+	// equals := slices.EqualFunc(numbers1, numbers2, func(v1, v2 int) bool {
+	// 	return v1 == v2 || v1%2 == v2%2  // 1 == 1
+	// })
+	// fmt.Println(equals)
+
+	// isSorted := slices.IsSorted(numbers1)
+	// fmt.Println(isSorted)
+
+	// idx, found := slices.BinarySearch(numbers1, 80)
+	// fmt.Println(idx, found)
+
+
+	// users := []User{
+	// 	{"Pavel", 33},
+	// 	{"Andrew", 36},
+	// 	{"Olga", 41},
+	// 	{"Elena", 44},
+	// 	{"Ivan", 58},
+	// }
+	// idx, found := slices.BinarySearchFunc(users, 44, func(v User, target int) int {
+	// 	return v.Age - target
+	// })
+	// fmt.Println(idx, found)
+
+
+	// str := "Зашифруй меня!"
+	// encodedStr := CaesarCode(str, 5, true)
+	// fmt.Println(encodedStr)
+	
+	// decodedStr := CaesarCode(encodedStr, 5, false)
+	// fmt.Println(decodedStr)
+
+	slice, err := CreateSlice(5)
+	if err != nil {
+		fmt.Println(err)
+		return	
+	} 
+	fmt.Println(slice)
+
+
+}
+
+
+
+// Функция для создания слайса
+// 	Функция CreateSlice(n int) ([]int, error) принимает целое число n и возвращает слайс
+// 	случайных целых чисел от -10 до 10 включительно, длиной в n. 
+// 	Если n отрицательное, функция должна возвращать ошибку, а программа должна вывести данную ошибку и завершить свою работу.
+
+func CreateSlice(n int) ([]int, error) {
+	if n < 0 {
+		return nil, fmt.Errorf("negative length")
+	}
+
+	slice := make([]int, n)
+	for i := range n {
+		slice[i] = rand.Intn(21) - 10  // [0, 20] - 10 = [-10, 10]
+	}
+	return slice, nil
+	
+}
+
+// Функция для фильтрации слайса
+// 	Функция FilterSlice(numbers []int) []int принимает слайс целых чисел и возвращает новый слайс, 
+// 	который будет содержать только те числа, которые соответствуют следующим условиям:
+
+// Перед числом, которое войдет в слайс с результатом, должно стоять число больше (в переданном в функцию слайсе).
+// Другими словами - число, которое будет добавлено в результирующий слайс, должно следовать за числом, которое больше него в исходном слайсе.
+// Число должно делиться без остатка на одно из чисел: 2, 5, 6, 9.
+// Пример:
+// 	Переданный в функцию слайс: [1, 6, 2, 5, 8, 6]
+// 	Результат, который вернет функция: [2, 6], так как 6 > 2 и 8 > 6, а также оба числа делятся на одно из чисел 2, 5, 6 или 9.
+
+// func FilterSlice(numbers []int) []int {
+// 	result := make([]int, len(numbers))
 
 	
+// }
 
+
+
+// Функция для нахождения максимальной суммы подслайса
+// 	Функция MaxSumWithNegative(numbers []int, k int) []int принимает слайс целых чисел и целое число k. 
+// 	Она должна вернуть новый слайс, который будет содержать значения подслайса длиной k, 
+// 	который имеет максимальную сумму и содержит хотя бы одно отрицательное число.
+// 	Если такого слайса не будет, необходимо вернуть nil.
+
+// Под "подслайсом" понимается последовательно расположенные значения в оригинальном слайсе.
+// Пример:
+// 	Представим, что функция вызывается таким образом: MaxSumWithNegative([]int{-1, 6, 2, 5, 8, -2}, 3)
+// 	Функция должна найти и вернуть слайс с наибольшей суммой значений среди всех подслайсов, в которых будет три значения. 
+// 	Определим какие подслайсы есть в переданном слайсе:
+// 	-1, 6, 2
+// 	6, 2, 5
+// 	2, 5, 8
+// 	5, 8, -2
+
+// 	Необходимо найти подслайс с самой большой суммой значений и вернуть его, при этом, 
+// 	в подслайсе должно быть как минимум одно отрицательное число. 
+// 	В данном примере это будет последний слайс, именно его нам и нужно вернуть.
+
+
+
+
+
+// Функция для сортировки слайса
+// 	Функция SortByParity(numbers []int) []int должна отсортировать слайс. 
+// 	Четные числа в слайсе должны быть в начале, отсортированы по убыванию, 
+// 	а нечетные в конце слайса и отсортированы по возрастанию.
+
+
+
+
+
+
+func CaesarCode(text string, shift int32, encode bool) string {
+	result := make([]rune, 0, utf8.RuneCountInString(text))
+	for _, r := range text {
+		if encode {
+			result = append(result, r+shift)
+		} else {
+			result = append(result, r-shift)
+		}
+	}
+	return string(result)
+}
+
+// func CaesarCode(text string, shift int32, encode bool) string {
+// 	if !encode {
+// 		shift = -shift
+// 	}
+
+// 	result := []rune{}
+
+// 	for _, ch := range text {
+// 		if ch >= 'А' && ch <= 'я' {
+
+// 			start := int32('А')
+// 			end := int32('я')
+// 			size := end - start + 1  // 33 - 1 + 1 = 33
+
+// 			newChar := ch + shift
+
+// 			if newChar > end {
+// 				newChar = start + (newChar-end-1)%size
+// 			}
+// 			if newChar < start {
+// 				newChar = end - (start-newChar-1)%size
+// 			}
+
+// 			result = append(result, rune(newChar))
+
+// 		} else {
+// 			result = append(result, ch)
+// 		}
+// 	}
+// 	return string(result)
+// }
+
+
+
+
+type User struct {
+	Name string
+	Age int
 }
 
 /*
