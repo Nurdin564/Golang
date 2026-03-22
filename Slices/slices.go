@@ -332,12 +332,17 @@ func main() {
 	// decodedStr := CaesarCode(encodedStr, 5, false)
 	// fmt.Println(decodedStr)
 
-	slice, err := CreateSlice(5)
-	if err != nil {
-		fmt.Println(err)
-		return	
-	} 
-	fmt.Println(slice)
+
+	// slice, err := CreateSlice(5)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return	
+	// } 
+	// fmt.Println(slice)
+
+	// fmt.Println(FilterSlice([]int{1, 6, 2, 5, 8, 6}))
+	// fmt.Println(MaxSumWithNegative([]int{-1, 6, 2, 5, 8, -2}, 3))
+	fmt.Println(SortByParity([]int{1,2,3,4,5,6,7,8,9}))
 
 
 }
@@ -373,13 +378,18 @@ func CreateSlice(n int) ([]int, error) {
 // 	Переданный в функцию слайс: [1, 6, 2, 5, 8, 6]
 // 	Результат, который вернет функция: [2, 6], так как 6 > 2 и 8 > 6, а также оба числа делятся на одно из чисел 2, 5, 6 или 9.
 
-// func FilterSlice(numbers []int) []int {
-// 	result := make([]int, len(numbers))
+func FilterSlice(numbers []int) []int {
+	result := []int{}
 
-	
-// }
-
-
+	for i := 1; i < len(numbers); i++ {
+		if numbers[i]%2 == 0 || numbers[i]%5 == 0 || numbers[i]%6 == 0 || numbers[i]%9 == 0 {
+			if numbers[i-1] > numbers[i] {
+				result = append(result, numbers[i])
+			}
+		}
+	}
+	return result
+}
 
 // Функция для нахождения максимальной суммы подслайса
 // 	Функция MaxSumWithNegative(numbers []int, k int) []int принимает слайс целых чисел и целое число k. 
@@ -401,16 +411,74 @@ func CreateSlice(n int) ([]int, error) {
 // 	в подслайсе должно быть как минимум одно отрицательное число. 
 // 	В данном примере это будет последний слайс, именно его нам и нужно вернуть.
 
+func MaxSumWithNegative(numbers []int, k int) []int {
+	if len(numbers) < k {
+		return nil
+	}
+	
+	result := []int{}
+	maxSum := 0
+	found := false
 
+	for i := 0; i <= len(numbers)-k; i++ {
+		window := numbers[i : i+k]
+		
+		sum := 0
+		hasNegative := false
 
+		for _, v := range window {
+			sum += v
+			if v < 0 {
+				hasNegative = true
+			}
+		}
+		if hasNegative {
+			if !found || sum > maxSum {
+				maxSum = sum
+				result = window
+				found = true
+			}
+		}
+	}
 
+	if !found {
+		return nil
+	}
+
+	return result
+}
 
 // Функция для сортировки слайса
 // 	Функция SortByParity(numbers []int) []int должна отсортировать слайс. 
 // 	Четные числа в слайсе должны быть в начале, отсортированы по убыванию, 
 // 	а нечетные в конце слайса и отсортированы по возрастанию.
 
+func SortByParity(numbers []int) []int {
+	evens := []int{}
+	odds := []int{}
 
+	for _, v := range numbers {
+		if v%2 == 0 {
+			evens = append(evens, v)
+		} else {
+			odds = append(odds, v)
+		}
+	}
+
+	// slices.SortStableFunc(evens, func(i, j int) int {
+	// 	return evens[j] - evens[i]
+	// })
+
+	// slices.SortStableFunc(odds, func(i, j int) int {
+	// 	return odds[i] - odds[j]
+	// })
+
+	slices.Sort(evens)
+	slices.Reverse(evens)
+	slices.Sort(odds)
+
+	return append(evens, odds...)
+}
 
 
 
