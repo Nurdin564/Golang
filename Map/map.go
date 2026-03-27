@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"slices"
+	"strings"
+	// "unicode"
 )
 
 func main() {
@@ -82,16 +84,87 @@ func main() {
 	// val, ok := m["fruits"]["banana"]
 	// fmt.Println(val, ok)  // 10, true  or  0, false
 
-	m := map[string]int{
-		"banana":     2,
-		"apple":      1,
-		"grapefruit": 3,
-		"cherry":     1,
+	// m := map[string]int{
+	// 	"banana":     2,
+	// 	"apple":      1,
+	// 	"grapefruit": 3,
+	// 	"cherry":     1,
+	// }
+	// invertedMap := invertMap(m)
+	// printMap(invertedMap)
+
+
+	// text := "Да здравствует прекрасный язые, да здравствует golang!"
+	// text = strings.Map(func (r rune) rune {
+	// 	if unicode.IsPunct(r) {
+	// 		return -1
+	// 	}
+	// 	return unicode.ToLower(r)
+	// }, text)
+
+	// words := strings.Split(text, " ")
+	// wordsCount := make(map[string]int)
+	// for _, word := range words {
+	// 	wordsCount[word]++
+	// }
+
+	// for word, count := range wordsCount {
+	// 	fmt.Printf("Word %q occurs in line %d times.\n", word, count)
+	// }
+
+
+	input := map[string]int { 
+		"Mitchel Resnick": 5,  
+		"Linus Torvalds": 5,
+		"Donald Knuth": 3,
+		"Tim Berners-Lee": 4,
+		"Bjarne Stroustrup": 5,
 	}
-	invertedMap := invertMap(m)
-	printMap(invertedMap)
+	fmt.Println(countVotes(input))
 
 }
+
+
+/*
+Подсчет голосов
+Необходимо реализовать функцию countVotes, которая будет определять кандидата с наибольшим количеством голосов на выборах.
+	Функция countVotes принимает один аргумент: votes типа map[string]int, 
+	где ключами являются имена кандидатов (типа string), а значениями — количество голосов, полученных каждым кандидатом (типа int). 
+Функция countVotes должна возвращать имя кандидата (типа string), который получил наибольшее количество голосов.
+	В случае, если несколько кандидатов имеют одинаковое максимальное количество голосов, 
+	верните имена всех кандидатов через запятую, в алфавитном порядке. 
+Если в аргументе votes не будет ни одного кандидата, функция должна вернуть строку Кандидаты потерялись.
+	Если кандидаты были, но ни у одного кандидата не было ни одного голоса, необходимо вернуть строку Все голоса похищены!
+*/
+func countVotes(votes map[string]int) string {
+	if len(votes) == 0 {
+		return "Кандидаты потерялись"
+	}
+
+	maxVotes := 0
+	for _, v := range votes {
+		if v > maxVotes {
+			maxVotes = v
+		}
+	}
+
+	if maxVotes == 0 {
+		return "Все голоса похищены!"
+	}
+
+	winners := make([]string, 0)
+	for name, v := range votes {
+		if v == maxVotes {
+			winners = append(winners, name)
+		}
+	}
+
+	slices.Sort(winners)
+	return strings.Join(winners, ", ")
+
+}
+
+
 
 /*
 Вам необходимо реализовать две функции, первая - invertMap, которая будет инвертировать входную map, 
