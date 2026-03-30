@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"maps"
+	// "maps"
 	"slices"
 	"strings"
 	// "unicode"
@@ -113,15 +115,191 @@ func main() {
 	// }
 
 
-	input := map[string]int { 
-		"Mitchel Resnick": 5,  
-		"Linus Torvalds": 5,
-		"Donald Knuth": 3,
-		"Tim Berners-Lee": 4,
-		"Bjarne Stroustrup": 5,
-	}
-	fmt.Println(countVotes(input))
+	// input := map[string]int { 
+	// 	"Mitchel Resnick": 5,  
+	// 	"Linus Torvalds": 5,
+	// 	"Donald Knuth": 3,
+	// 	"Tim Berners-Lee": 4,
+	// 	"Bjarne Stroustrup": 5,
+	// }
+	// fmt.Println(countVotes(input))
 
+
+	// m1 := map[string][]int{
+	// 	"a": {5, 2},
+	// 	"b": {20, 11},
+	// }
+	// m2 := map[string][]int{
+	// 	"a": {1, 5, 1},
+	// 	"b": {11, 20},
+	// }
+	
+	// result := maps.EqualFunc(m1, m2, func(v1, v2 []int) bool {  // смотрит значения по одинаковому ключу
+	// 	sum1 := 0
+	// 	for _, v := range v1 {
+	// 		sum1 += v
+	// 	}
+	// 	sum2 := 0
+	// 	for _, v := range v2 {
+	// 		sum2 += v
+	// 	}
+	// 	return sum1 == sum2
+	// })
+	// fmt.Println(result)
+
+	// fmt.Println(CompareMaxValues(m1, m2))
+
+
+	// m1 := map[string]int{
+	// 	"a": 5,
+	// 	"b": 10,
+	// }
+	// m2 := map[string]int{
+	// 	"a": 50,
+	// 	"b": 10,
+	// }
+	// maps.Copy(m1, m2)
+	// fmt.Println(m1)  // map[a:50 b:10]
+	// m3 := maps.Clone(m1)
+	// fmt.Println(m3)  // map[a:50 b:10]
+
+
+	// m := map[string][]int{
+	// 	"a": {5, 2},
+	// 	"b": {20, 11},
+	// 	"c": {1, 3, 9},
+	// 	"d": {6, 111, 5},
+	// }
+	// maps.DeleteFunc(m, func(key string, value []int) bool {
+	// 	return slices.Contains(value, 5)
+	// 	// for _, v := range value {
+	// 	// 	if v == 5 {
+	// 	// 		return true
+	// 	// 	}
+	// 	// }
+	// 	// return false
+	// })
+	// fmt.Println(m)  // map[b:[20 11] c:[1 3 9]]
+
+	m := map[string][]int{
+		"a": {1, 2, 3},
+		"b": {4, 5},
+		"c": {1, 1, 1},
+		"d": {2, 2, 3},
+	}
+	RemoveSlicesBySum(m)
+	fmt.Println(m)
+	
+}
+
+/*
+Необходимо написать функцию RemoveSlicesBySum, которая принимает на вход map типа map[string][]int, 
+и удаляет из этой карты все слайсы, сумма элементов которых превышает 6.
+
+func RemoveSlicesBySum(m map[string][]int) {
+	for s, i := range m {
+		sum := 0
+		for _, j := range i {
+			sum += j
+		}
+		if sum > 6 {
+			delete(m, s)
+		}
+	}
+}
+*/
+func RemoveSlicesBySum(m map[string][]int) {
+	maps.DeleteFunc(m, func(key string, value []int) bool {
+		sum := 0
+		for _, v := range value {
+			sum += v
+		}
+		return sum > 6
+	})
+}
+
+
+/*
+Необходимо реализовать функцию mergeMaps, которая принимает два аргумента типа map[string]int
+и возвращает новый мап типа map[string]int. Функция должна объединять значения из двух мап, 
+суммируя значения для одинаковых ключей. Если ключ присутствует только в одной из мап, 
+он должен быть добавлен в результирующую мапу с соответствующим значением.
+Пример
+m1 := map[string]int{"a": 1, "b": 2, "c": 3}
+m2 := map[string]int{"b": 3, "c": 4, "d": 5}
+result := mergeMaps(m1, m2)
+// result будет равен map[string]int{"a": 1, "b": 5, "c": 7, "d": 5}
+*/
+func mergeMaps(m1, m2 map[string]int) map[string]int {
+	result := map[string]int{}
+	maps.Copy(result, m1)
+	for j, k := range m2 {
+		result[j] += k
+	}
+	return result
+}
+
+
+
+/*
+Напишите функцию CompareMaxValues, которая принимает два параметра: два map типа map[string][]int. 
+Функция должна сравнить максимальные значения в срезах для каждого ключа. 
+Если максимальные значения для всех соответствующих ключей в обоих map равны, функция должна вернуть true, в противном случае — false
+
+func CompareMaxValues(m1, m2 map[string][]int) bool {
+	if len(m1) != len(m2) {
+		return false
+	}
+
+	for key, arr1 := range m1 {
+		arr2, ok := m2[key]
+		if !ok {
+			return false
+		}
+
+		if len(arr1) == 0 && len(arr2) == 0 {
+			continue
+		}
+
+		if len(arr1) == 0 || len(arr2) == 0 {
+			return false
+		}
+
+		max1 := arr1[0]
+		max2 := arr2[0]
+
+		for _, v := range arr1 {
+			if v > max1 {
+				max1 = v
+			}
+		}
+		for _, v := range arr2 {
+			if v > max2 {
+				max2 = v
+			}
+		}
+
+		if max1 != max2 {
+			return false
+		}
+
+	}
+	return true
+	
+}
+*/
+func CompareMaxValues(m1, m2 map[string][]int) bool {
+	return maps.EqualFunc(m1, m2, func(v1, v2 []int) bool {
+		if len(v1) == 0 && len(v2) == 0 {
+			return true
+		}
+
+		if len(v1) == 0 || len(v2) == 0 {
+			return false
+		}
+
+		return slices.Max(v1) == slices.Max(v2)
+	})
 }
 
 
