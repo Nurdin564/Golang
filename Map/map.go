@@ -231,6 +231,13 @@ func main() {
 		fmt.Printf("%s: %d\n", user, countFriends[user])
 	}
 
+	user1, user2 := "Иван", "Елена"
+	commonFriends := commonFriends(friendsData, user1, user2)
+	slices.Sort(commonFriends)
+	fmt.Printf("Общие друзья между пользователями %s и %s: %s.\n", user1, user2, strings.Join(commonFriends, ", "))
+
+	popularUsers, maxFriends := mostPopularUsers(friendsData)
+	fmt.Printf("Наиболее популярные пользователи: %s (количество друзей: %d).\n", strings.Join(popularUsers, ", "), maxFriends)
 
 	
 }
@@ -286,12 +293,36 @@ func countFriends(m1 map[string][]string) map[string]int {
 	return result
 }
 
-// func commonFriends(m1 map[string][]string, user1, user2 string) []string {
-// 	friends1 := m1[user1]
-// 	friends2 := m1[user2]
-// 	result := []string{}
-// 	set := map[string]string{}
-// }
+func commonFriends(m1 map[string][]string, user1, user2 string) []string {
+	friends1 := make(map[string]struct{})
+	for _, friend := range m1[user1] {
+		friends1[friend] = struct{}{}
+	}
+
+	commonFriends := []string{}
+	for _, friend := range m1[user2] {
+		if _, ok := friends1[friend]; ok {
+			commonFriends = append(commonFriends, friend)
+		}
+	}
+	return commonFriends
+}
+
+func mostPopularUsers(m1 map[string][]string) ([]string, int) {
+	MaxFriends := 0
+	users := []string{}
+
+	for user, friends := range m1 {
+		friendsCount := len(friends)
+		if friendsCount > MaxFriends {
+			users = []string{user}
+			MaxFriends = friendsCount
+		} else if MaxFriends == friendsCount {
+			users = append(users, user)
+		}
+	}
+	return users, MaxFriends
+}
 
 
 
