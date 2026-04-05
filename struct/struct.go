@@ -1,8 +1,9 @@
 package main
 
 import (
+	"errors"
 	"fmt"
-	"strings"
+	// "strings"
 )
 
 func main() {
@@ -68,65 +69,209 @@ func main() {
 	// fmt.Printf("%+v\n", user1)  // {Name:{First:Arthur Last:Celestial} BirthYear:1888}
 
 
-	user := User{
-		ID:    1,
-		Name:  "Иван Петров",
-		Email: "ivan.petrov@example.com",
-		Phone: "+7 999 123-45-67",
-		Address: Address{
-			Street:     "Улица Ленина",
-			City:       "Москва",
-			PostalCode: "101000",
-		},
-		Cart: []CartItem{
-			{
-				Product: Product{
-					ID:          1,
-					Name:        "Ноутбук",
-					Description: "Мощный ноутбук для работы и игр",
-					Price:       59990,
-					Category:    "Электроника",
-					Brand:       "Brand A",
-					Rating:      4.5,
-					Reviews:     120,
-				},
-				Quantity: 1,
-			},
-			{
-				Product: Product{
-					ID:          2,
-					Name:        "Смартфон",
-					Description: "Современный смартфон с отличной камерой",
-					Price:       29990,
-					Category:    "Электроника",
-					Brand:       "Brand B",
-					Rating:      4.7,
-					Reviews:     200,
-				},
-				Quantity: 2,
-			},
-			{
-				Product: Product{
-					ID:          3,
-					Name:        "Наушники",
-					Description: "Беспроводные наушники с шумоподавлением",
-					Price:       7990,
-					Category:    "Аудио",
-					Brand:       "Brand C",
-					Rating:      4.3,
-					Reviews:     80,
-				},
-				Quantity: 1,
-			},
-		},
-	}
+	// user := User{
+	// 	ID:    1,
+	// 	Name:  "Иван Петров",
+	// 	Email: "ivan.petrov@example.com",
+	// 	Phone: "+7 999 123-45-67",
+	// 	Address: Address{
+	// 		Street:     "Улица Ленина",
+	// 		City:       "Москва",
+	// 		PostalCode: "101000",
+	// 	},
+	// 	Cart: []CartItem{
+	// 		{
+	// 			Product: Product{
+	// 				ID:          1,
+	// 				Name:        "Ноутбук",
+	// 				Description: "Мощный ноутбук для работы и игр",
+	// 				Price:       59990,
+	// 				Category:    "Электроника",
+	// 				Brand:       "Brand A",
+	// 				Rating:      4.5,
+	// 				Reviews:     120,
+	// 			},
+	// 			Quantity: 1,
+	// 		},
+	// 		{
+	// 			Product: Product{
+	// 				ID:          2,
+	// 				Name:        "Смартфон",
+	// 				Description: "Современный смартфон с отличной камерой",
+	// 				Price:       29990,
+	// 				Category:    "Электроника",
+	// 				Brand:       "Brand B",
+	// 				Rating:      4.7,
+	// 				Reviews:     200,
+	// 			},
+	// 			Quantity: 2,
+	// 		},
+	// 		{
+	// 			Product: Product{
+	// 				ID:          3,
+	// 				Name:        "Наушники",
+	// 				Description: "Беспроводные наушники с шумоподавлением",
+	// 				Price:       7990,
+	// 				Category:    "Аудио",
+	// 				Brand:       "Brand C",
+	// 				Rating:      4.3,
+	// 				Reviews:     80,
+	// 			},
+	// 			Quantity: 1,
+	// 		},
+	// 	},
+	// }
 
-	printInfo(user)
+	// printInfo(user)
+
+
+	// user1 := User{
+	// 	Name: Name{
+	// 		First: "Pavel",
+	// 		Last: "Tarasov",
+	// 	},
+	// 	BirthYear: 1919,
+	// }
+	// user1.Greet()
+
+	// newName := Name{
+	// 	First: "Ivan",
+	// 	Last: "Ivanov",
+	// }
+	// user1.ChangeName(newName)
+	// user1.Greet()
 
 
 
-	
 }
+
+/*
+Необходимо реализовать структуру User с определенными методами.
+Структура
+	FirstName (string) - имя
+	LastName (string) - фамилия
+	BirthYear (int) - год рождения
+	FavoriteLanguages ([]string) - любимые языки программирования
+Методы
+	SecretIdentity() string: генерирует секретное имя. 
+	Секретное имя должно быть составлено из первых букв имени и фамилии, за которыми следует случайное число от 1 до 100. 
+	Например, для пользователя с именем "Алексей" и фамилией "Смирнов" секретное имя может быть "АС42". 
+
+	Age() int: возвращает текущий возраст пользователя на основе года рождения 
+	(текущий год можно получить с помощью time.Now().Year(), мы это пока не проходили).
+
+	AddFavoriteLanguage(language string) error: добавляет язык программирования в слайс FavoriteLanguages, 
+	если добавляемый язык уже присутствует в слайсе, то необходимо вернуть ошибку с сообщением duplicate. 
+	Если было передано пустое имя, нужно вернуть ошибку empty language name.
+
+	RemoveFavoriteLanguage(language string) error: удаляет язык программирования из слайса FavoriteLanguages, 
+	если языка нет, возвращает ошибку not found.
+	
+	IsProgrammingLanguageFavorite(language string) bool: проверяет, является ли указанный язык программирования любимым.
+
+	RandomFavoriteLanguage() (string, error): возвращает случайный язык из списка любимых языков программирования, 
+	если любимых языков нет в слайсе FavoriteLanguages, необходимо вернуть ошибку no options.
+
+	GenerateProfile() string: возвращает строку с полным профилем пользователя в верном формате (пример):
+	Имя: Павел.
+	Фамилия: Тарасов.
+	Возраст: 35.
+	Список любимых языков программирования: [Язык1, Язык2].
+        
+	UpdateName(firstName, lastName string) error: обновляет имя и фамилию пользователя, 
+	если были переданы пустые имя или фамилия, необходимо вернуть ошибку empty data, 
+	также необходимо вернуть ошибку invalid data, если имя или фамилия написаны с маленькой буквы.
+*/
+type User struct {
+	FirstName         string
+	LastName          string
+	BirthYear         int
+	FavoriteLanguages []string
+}
+
+func (u User) SecretIdentity() string {
+	
+	return ""
+}
+
+func (u User) Age() int {
+	return 0
+}
+
+func (u User) AddFavoriteLanguage(language string) error {
+	return errors.New("not realized")
+}
+
+func (u User) RemoveFavoriteLanguage(language string) error {
+	return errors.New("not realized")
+}
+
+func (u User) IsProgrammingLanguageFavorite(language string) bool {
+	return false
+}
+
+func (u User) RandomFavoriteLanguage() (string, error) {
+	return "", errors.New("not realized")
+}
+
+func (u User) GenerateProfile() string {
+	return ""
+}
+
+func (u User) UpdateName(firstName, lastName string) error {
+	return errors.New("not realized")
+}
+
+
+
+
+/*
+Необходимо разработать структуру данных студента и реализовать методы для работы с данной структурой.
+Структура должна содержать информацию об имени студента и его оценках, 
+а также предоставлять функциональность для вычисления средней оценки и вывода информации о студенте.
+
+Структура Student
+	Name (строка) - имя студента.
+	Grades (срез целых чисел) - список оценок студента.
+Методы
+	AverageGrade() float64: метод, который вычисляет и возвращает среднюю оценку студента, 
+	с округлением по правилам математики до одного числа в дробной части. 
+	Средняя оценка рассчитывается как сумма всех оценок, деленная на количество оценок. 
+	Если у студента нет оценок, метод должен возвращать 0.
+Info(): метод, который возвращает информацию о студенте в следующем формате (без переноса строки):
+	Студент [ИМЯ], средняя оценка: [ОЦЕНКА].
+*/
+// type Student struct {
+// 	Name string
+// 	Grades []int
+// }
+
+// func (s Student) AverageGrade() float64 {
+// 	if len(s.Grades) == 0 {
+// 		return 0
+// 	}
+
+// 	sum := 0
+// 	for _, v := range s.Grades {
+// 		sum += v
+// 	}
+
+// 	return float64(sum / len(s.Grades))
+// }
+
+// func (s Student) Info() {
+// 	fmt.Printf("Student %s, average grade: %.1f", s.Name, s.AverageGrade())
+// }
+
+// func (u User) Greet() {
+// 	fmt.Printf("I am %s %s, %d years of born\n", u.Name.First, u.Name.Last, u.BirthYear)
+// }
+
+// func (u *User) ChangeName(name Name) {
+// 	u.Name = name
+// }
+
+
 
 
 /*
@@ -147,74 +292,74 @@ func main() {
 	Общая сумма покупки: [СУММА] руб.
 */
 // User представляет пользователя
-type User struct {
-	ID      int
-	Name    string
-	Email   string
-	Phone   string
-	Address Address
-	Cart    []CartItem
-}
+// type User struct {
+// 	ID      int
+// 	Name    string
+// 	Email   string
+// 	Phone   string
+// 	Address Address
+// 	Cart    []CartItem
+// }
 
-// Address представляет адрес пользователя
-type Address struct {
-	Street     string
-	City       string
-	PostalCode string
-}
+// // Address представляет адрес пользователя
+// type Address struct {
+// 	Street     string
+// 	City       string
+// 	PostalCode string
+// }
 
-// CartItem представляет элемент в корзине
-type CartItem struct {
-	Product  Product
-	Quantity int
-}
+// // CartItem представляет элемент в корзине
+// type CartItem struct {
+// 	Product  Product
+// 	Quantity int
+// }
 
-// Product представляет продукт в корзине
-type Product struct {
-	ID          int
-	Name        string
-	Description string
-	Price       int
-	Category    string
-	Brand       string
-	Rating      float64
-	Reviews     int
-}
+// // Product представляет продукт в корзине
+// type Product struct {
+// 	ID          int
+// 	Name        string
+// 	Description string
+// 	Price       int
+// 	Category    string
+// 	Brand       string
+// 	Rating      float64
+// 	Reviews     int
+// }
 
-func printInfo(user User) {
-	fmt.Printf("Customer %s. Phone: %s. Address: t. %s, %s.\n", user.Name, user.Phone, user.Address.City, user.Address.Street)
+// func printInfo(user User) {
+// 	fmt.Printf("Customer %s. Phone: %s. Address: t. %s, %s.\n", user.Name, user.Phone, user.Address.City, user.Address.Street)
 	
-	isElectronics := false
-	for _, item := range user.Cart{
-		if item.Product.Category == "Electronics" {
-			isElectronics = true
-			break			
-		}
-	}
-	if isElectronics {
-		fmt.Println("User is a customer of electronics.")
-	} else {
-		fmt.Println("User isn't a customer of electroniks")
-	}
+// 	isElectronics := false
+// 	for _, item := range user.Cart{
+// 		if item.Product.Category == "Electronics" {
+// 			isElectronics = true
+// 			break			
+// 		}
+// 	}
+// 	if isElectronics {
+// 		fmt.Println("User is a customer of electronics.")
+// 	} else {
+// 		fmt.Println("User isn't a customer of electroniks")
+// 	}
 
-	slice := []string{}
-	for _, item := range user.Cart {
-		if item.Product.Price > 1000 {
-			slice = append(slice, item.Product.Name)
-		}
-	}
-	if len(slice) > 0 {
-		fmt.Printf("Items in the basket, with a price of 10,000 or more: %s.\n", strings.Join(slice, ", "))
-	} else {
-		fmt.Println("Items in the basket with a price of 10,000 or more: none.")
-	}
+// 	slice := []string{}
+// 	for _, item := range user.Cart {
+// 		if item.Product.Price > 1000 {
+// 			slice = append(slice, item.Product.Name)
+// 		}
+// 	}
+// 	if len(slice) > 0 {
+// 		fmt.Printf("Items in the basket, with a price of 10,000 or more: %s.\n", strings.Join(slice, ", "))
+// 	} else {
+// 		fmt.Println("Items in the basket with a price of 10,000 or more: none.")
+// 	}
 
-	sum := 0
-	for _, item := range user.Cart {
-		sum += item.Quantity * item.Product.Price
-	}
-	fmt.Printf("Total purchase amount: %d\n", sum)
-}
+// 	sum := 0
+// 	for _, item := range user.Cart {
+// 		sum += item.Quantity * item.Product.Price
+// 	}
+// 	fmt.Printf("Total purchase amount: %d\n", sum)
+// }
 
 
 
@@ -224,10 +369,10 @@ func printInfo(user User) {
 // 	BirthYear int
 // }
 
-// type Name struct {
-// 	First string
-// 	Last string
-// }
+type Name struct {
+	First string
+	Last string
+}
 
 // type User1 struct {
 // 	Name struct {
