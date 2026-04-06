@@ -2,8 +2,15 @@ package main
 
 import (
 	"errors"
-	"fmt"
+	"slices"
+	"strconv"
 	// "strings"
+	"time"
+	"unicode"
+
+	// "strings"
+	"fmt"
+	"math/rand"
 )
 
 func main() {
@@ -25,7 +32,6 @@ func main() {
 	// user3 := &User{}
 	// fmt.Printf("%+v\n", user3)  // &{FirstName: LastName: BirthYear:0}
 
-
 	// name := Name{
 	// 	First: "Giga",
 	// 	Last: "Niga",
@@ -36,7 +42,7 @@ func main() {
 	// 	BirthYear: 1990,
 	// }
 	// fmt.Printf("%+v\n", user)
-	
+
 	// user.Name = Name {
 	// 	First: "Gangster",
 	// 	Last: "is Gay",
@@ -67,7 +73,6 @@ func main() {
 	// 	Last: "Celestial",
 	// }
 	// fmt.Printf("%+v\n", user1)  // {Name:{First:Arthur Last:Celestial} BirthYear:1888}
-
 
 	// user := User{
 	// 	ID:    1,
@@ -124,7 +129,6 @@ func main() {
 
 	// printInfo(user)
 
-
 	// user1 := User{
 	// 	Name: Name{
 	// 		First: "Pavel",
@@ -142,34 +146,44 @@ func main() {
 	// user1.Greet()
 
 
+	user := User{
+		FirstName: "Alex",
+		LastName: "Nurko",
+		BirthYear: 2005,
+	}
+	fmt.Println(user.SecretIdentity())
+
 
 }
 
 /*
 Необходимо реализовать структуру User с определенными методами.
 Структура
+
 	FirstName (string) - имя
 	LastName (string) - фамилия
 	BirthYear (int) - год рождения
 	FavoriteLanguages ([]string) - любимые языки программирования
-Методы
-	SecretIdentity() string: генерирует секретное имя. 
-	Секретное имя должно быть составлено из первых букв имени и фамилии, за которыми следует случайное число от 1 до 100. 
-	Например, для пользователя с именем "Алексей" и фамилией "Смирнов" секретное имя может быть "АС42". 
 
-	Age() int: возвращает текущий возраст пользователя на основе года рождения 
+Методы
+
+	SecretIdentity() string: генерирует секретное имя.
+	Секретное имя должно быть составлено из первых букв имени и фамилии, за которыми следует случайное число от 1 до 100.
+	Например, для пользователя с именем "Алексей" и фамилией "Смирнов" секретное имя может быть "АС42".
+
+	Age() int: возвращает текущий возраст пользователя на основе года рождения
 	(текущий год можно получить с помощью time.Now().Year(), мы это пока не проходили).
 
-	AddFavoriteLanguage(language string) error: добавляет язык программирования в слайс FavoriteLanguages, 
-	если добавляемый язык уже присутствует в слайсе, то необходимо вернуть ошибку с сообщением duplicate. 
+	AddFavoriteLanguage(language string) error: добавляет язык программирования в слайс FavoriteLanguages,
+	если добавляемый язык уже присутствует в слайсе, то необходимо вернуть ошибку с сообщением duplicate.
 	Если было передано пустое имя, нужно вернуть ошибку empty language name.
 
-	RemoveFavoriteLanguage(language string) error: удаляет язык программирования из слайса FavoriteLanguages, 
+	RemoveFavoriteLanguage(language string) error: удаляет язык программирования из слайса FavoriteLanguages,
 	если языка нет, возвращает ошибку not found.
-	
+
 	IsProgrammingLanguageFavorite(language string) bool: проверяет, является ли указанный язык программирования любимым.
 
-	RandomFavoriteLanguage() (string, error): возвращает случайный язык из списка любимых языков программирования, 
+	RandomFavoriteLanguage() (string, error): возвращает случайный язык из списка любимых языков программирования,
 	если любимых языков нет в слайсе FavoriteLanguages, необходимо вернуть ошибку no options.
 
 	GenerateProfile() string: возвращает строку с полным профилем пользователя в верном формате (пример):
@@ -177,9 +191,9 @@ func main() {
 	Фамилия: Тарасов.
 	Возраст: 35.
 	Список любимых языков программирования: [Язык1, Язык2].
-        
-	UpdateName(firstName, lastName string) error: обновляет имя и фамилию пользователя, 
-	если были переданы пустые имя или фамилия, необходимо вернуть ошибку empty data, 
+
+	UpdateName(firstName, lastName string) error: обновляет имя и фамилию пользователя,
+	если были переданы пустые имя или фамилия, необходимо вернуть ошибку empty data,
 	также необходимо вернуть ошибку invalid data, если имя или фамилия написаны с маленькой буквы.
 */
 type User struct {
@@ -190,53 +204,87 @@ type User struct {
 }
 
 func (u User) SecretIdentity() string {
-	
-	return ""
+	random := rand.Intn(100) + 1
+	secret := u.FirstName[:1] + u.LastName[:1] + strconv.Itoa(random)
+	return secret
 }
 
 func (u User) Age() int {
-	return 0
+	currentDate := time.Now().Year()
+	age := currentDate - u.BirthYear
+	return age
 }
 
-func (u User) AddFavoriteLanguage(language string) error {
-	return errors.New("not realized")
+func (u *User) AddFavoriteLanguage(language string) error {
+	if language == "" {
+		return errors.New("empty language name")
+	}
+	if slices.Contains(u.FavoriteLanguages, language) {
+		return errors.New("duplicate")
+	}	
+
+	u.FavoriteLanguages = append(u.FavoriteLanguages, language)
+	return nil
 }
 
-func (u User) RemoveFavoriteLanguage(language string) error {
-	return errors.New("not realized")
+func (u *User) RemoveFavoriteLanguage(language string) error {
+	for i, v := range u.FavoriteLanguages {
+		if v == language {
+			u.FavoriteLanguages = append(u.FavoriteLanguages[:i], u.FavoriteLanguages[i+1:]...)
+			return nil
+		}
+	}
+	return errors.New("not found")
 }
 
 func (u User) IsProgrammingLanguageFavorite(language string) bool {
-	return false
+	return slices.Contains(u.FavoriteLanguages, language)
 }
 
 func (u User) RandomFavoriteLanguage() (string, error) {
-	return "", errors.New("not realized")
+	if len(u.FavoriteLanguages) == 0 {
+		return "", errors.New("no options")
+	}
+	randomIndex := rand.Intn(len(u.FavoriteLanguages))
+	return u.FavoriteLanguages[randomIndex], nil
 }
 
 func (u User) GenerateProfile() string {
-	return ""
+		return fmt.Sprintf(
+		"Name: %s.\nSurname: %s.\nAge: %d.\nList of favorite programming languages: %v.",
+		u.FirstName,
+		u.LastName,
+		u.Age(),
+		u.FavoriteLanguages,
+	)
 }
 
-func (u User) UpdateName(firstName, lastName string) error {
-	return errors.New("not realized")
+func (u *User) UpdateName(firstName, lastName string) error {
+	if firstName == "" || lastName == "" {
+		return errors.New("empty data")
+	}
+
+	if !unicode.IsUpper(rune(firstName[0])) || !unicode.IsUpper(rune(lastName[0])) {
+		return errors.New("invalid data")
+	}
+
+	u.FirstName = firstName
+	u.LastName = lastName
+	return nil
 }
-
-
-
 
 /*
 Необходимо разработать структуру данных студента и реализовать методы для работы с данной структурой.
-Структура должна содержать информацию об имени студента и его оценках, 
+Структура должна содержать информацию об имени студента и его оценках,
 а также предоставлять функциональность для вычисления средней оценки и вывода информации о студенте.
 
 Структура Student
 	Name (строка) - имя студента.
 	Grades (срез целых чисел) - список оценок студента.
 Методы
-	AverageGrade() float64: метод, который вычисляет и возвращает среднюю оценку студента, 
-	с округлением по правилам математики до одного числа в дробной части. 
-	Средняя оценка рассчитывается как сумма всех оценок, деленная на количество оценок. 
+	AverageGrade() float64: метод, который вычисляет и возвращает среднюю оценку студента,
+	с округлением по правилам математики до одного числа в дробной части.
+	Средняя оценка рассчитывается как сумма всех оценок, деленная на количество оценок.
 	Если у студента нет оценок, метод должен возвращать 0.
 Info(): метод, который возвращает информацию о студенте в следующем формате (без переноса строки):
 	Студент [ИМЯ], средняя оценка: [ОЦЕНКА].
@@ -271,22 +319,19 @@ Info(): метод, который возвращает информацию о 
 // 	u.Name = name
 // }
 
-
-
-
 /*
 Функция printInfo должна выводить следующую информацию, каждое сообщение на новой строке:
-Информация о пользователе. 
+Информация о пользователе.
 Формат данных:
-	Покупатель [ИМЯ]. Телефон: [ТЕЛЕФОН]. Адрес: г. [ГОРОД], [УЛИЦА]. 
-Покупатель электроники. 
+	Покупатель [ИМЯ]. Телефон: [ТЕЛЕФОН]. Адрес: г. [ГОРОД], [УЛИЦА].
+Покупатель электроники.
 	Вывести, есть ли в корзине пользователя что-нибудь из категории "Электроника" в формате:
-	Пользователь [является/не является] покупателем электроники.            
+	Пользователь [является/не является] покупателем электроники.
 Товары с высокой ценой.
 	Вывести названия товаров в корзине, цена которых выше или равна 10000 в формате:
-	Товары в корзине, где цена 10000 и более: [НАЗВАНИЯ_ТОВАРОВ].              
+	Товары в корзине, где цена 10000 и более: [НАЗВАНИЯ_ТОВАРОВ].
 	Если подходящих товаров не окажется, то вместо названия товаров необходимо вывести:
-	Товары в корзине, где цена 10000 и более: отсутствуют.      
+	Товары в корзине, где цена 10000 и более: отсутствуют.
 Общая сумма покупки.
 	Вывести общую сумму товаров в корзине, которая рассчитывается как сумма Price * Quantity для каждого элемента в Cart в формате:
 	Общая сумма покупки: [СУММА] руб.
@@ -328,12 +373,12 @@ Info(): метод, который возвращает информацию о 
 
 // func printInfo(user User) {
 // 	fmt.Printf("Customer %s. Phone: %s. Address: t. %s, %s.\n", user.Name, user.Phone, user.Address.City, user.Address.Street)
-	
+
 // 	isElectronics := false
 // 	for _, item := range user.Cart{
 // 		if item.Product.Category == "Electronics" {
 // 			isElectronics = true
-// 			break			
+// 			break
 // 		}
 // 	}
 // 	if isElectronics {
@@ -361,9 +406,6 @@ Info(): метод, который возвращает информацию о 
 // 	fmt.Printf("Total purchase amount: %d\n", sum)
 // }
 
-
-
-
 // type User struct {
 // 	Name Name
 // 	BirthYear int
@@ -371,7 +413,7 @@ Info(): метод, который возвращает информацию о 
 
 type Name struct {
 	First string
-	Last string
+	Last  string
 }
 
 // type User1 struct {
