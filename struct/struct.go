@@ -146,12 +146,56 @@ func main() {
 	// user1.Greet()
 
 
+	// Создаём пользователя
 	user := User{
-		FirstName: "Alex",
-		LastName: "Nurko",
-		BirthYear: 2005,
+		FirstName: "Алексей",
+		LastName:  "Смирнов",
+		BirthYear: 1987,
 	}
-	fmt.Println(user.SecretIdentity())
+
+	// Добавляем любимые языки
+	_ = user.AddFavoriteLanguage("Go")
+	_ = user.AddFavoriteLanguage("Python")
+
+	// Пытаемся добавить дубликат
+	err := user.AddFavoriteLanguage("go")
+	if err != nil {
+		fmt.Println("Ошибка:", err)
+	}
+
+	// Генерируем секретное имя
+	fmt.Println("Секретное имя:", user.SecretIdentity())
+
+	// Проверяем возраст
+	fmt.Println("Возраст:", user.Age())
+
+	// Проверяем любимый язык
+	fmt.Println("Любимый язык Go?", user.IsProgrammingLanguageFavorite("Go"))
+	fmt.Println("Любимый язык Java?", user.IsProgrammingLanguageFavorite("Java"))
+
+	// Случайный язык
+	lang, _ := user.RandomFavoriteLanguage()
+	fmt.Println("Случайный любимый язык:", lang)
+
+	// Печатаем профиль
+	fmt.Println("\nПрофиль пользователя:")
+	fmt.Println(user.GenerateProfile())
+
+	// Обновляем имя
+	err = user.UpdateName("Иван", "Петров")
+	if err != nil {
+		fmt.Println("Ошибка обновления имени:", err)
+	}
+
+	// Удаляем язык
+	err = user.RemoveFavoriteLanguage("Python")
+	if err != nil {
+		fmt.Println("Ошибка удаления:", err)
+	}
+
+	// Итоговый профиль
+	fmt.Println("\nОбновлённый профиль:")
+	fmt.Println(user.GenerateProfile())
 
 
 }
