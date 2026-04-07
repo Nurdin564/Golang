@@ -2,8 +2,12 @@ package main
 
 import (
 	"errors"
+	"log"
 	"slices"
 	"strconv"
+	"strings"
+	"yourgo/model"
+
 	// "strings"
 	"time"
 	"unicode"
@@ -147,58 +151,137 @@ func main() {
 
 
 	// Создаём пользователя
-	user := User{
-		FirstName: "Алексей",
-		LastName:  "Смирнов",
-		BirthYear: 1987,
-	}
+	// user := User{
+	// 	FirstName: "Алексей",
+	// 	LastName:  "Смирнов",
+	// 	BirthYear: 1987,
+	// }
 
-	// Добавляем любимые языки
-	_ = user.AddFavoriteLanguage("Go")
-	_ = user.AddFavoriteLanguage("Python")
+	// // Добавляем любимые языки
+	// _ = user.AddFavoriteLanguage("Go")
+	// _ = user.AddFavoriteLanguage("Python")
 
-	// Пытаемся добавить дубликат
-	err := user.AddFavoriteLanguage("go")
+	// // Пытаемся добавить дубликат
+	// err := user.AddFavoriteLanguage("go")
+	// if err != nil {
+	// 	fmt.Println("Ошибка:", err)
+	// }
+
+	// // Генерируем секретное имя
+	// fmt.Println("Секретное имя:", user.SecretIdentity())
+
+	// // Проверяем возраст
+	// fmt.Println("Возраст:", user.Age())
+
+	// // Проверяем любимый язык
+	// fmt.Println("Любимый язык Go?", user.IsProgrammingLanguageFavorite("Go"))
+	// fmt.Println("Любимый язык Java?", user.IsProgrammingLanguageFavorite("Java"))
+
+	// // Случайный язык
+	// lang, _ := user.RandomFavoriteLanguage()
+	// fmt.Println("Случайный любимый язык:", lang)
+
+	// // Печатаем профиль
+	// fmt.Println("\nПрофиль пользователя:")
+	// fmt.Println(user.GenerateProfile())
+
+	// // Обновляем имя
+	// err = user.UpdateName("Иван", "Петров")
+	// if err != nil {
+	// 	fmt.Println("Ошибка обновления имени:", err)
+	// }
+
+	// // Удаляем язык
+	// err = user.RemoveFavoriteLanguage("Python")
+	// if err != nil {
+	// 	fmt.Println("Ошибка удаления:", err)
+	// }
+
+	// // Итоговый профиль
+	// fmt.Println("\nОбновлённый профиль:")
+	// fmt.Println(user.GenerateProfile())
+
+
+	// student, err := NewStudent("Nurdin", 20, 5, "nnnn11@1")
+	// if err != nil {
+	// 	fmt.Printf("Incorrect data: %v\n", err)
+	// 	return  // если ошибка есть → мы сразу выходим из main
+	// }
+	// fmt.Printf("New student has created %+v\n", *student)
+
+
+	// p1 := model.Person{FirstName: "Nurdin", Age: 35}  // {FirstName:Nurdin LastName: Age:35} lastname is empty
+	p1, err := model.NewPerson("Nurdin", "Isamailov", 20)
 	if err != nil {
-		fmt.Println("Ошибка:", err)
+		log.Fatalf("unable to create person: %v", err)
 	}
-
-	// Генерируем секретное имя
-	fmt.Println("Секретное имя:", user.SecretIdentity())
-
-	// Проверяем возраст
-	fmt.Println("Возраст:", user.Age())
-
-	// Проверяем любимый язык
-	fmt.Println("Любимый язык Go?", user.IsProgrammingLanguageFavorite("Go"))
-	fmt.Println("Любимый язык Java?", user.IsProgrammingLanguageFavorite("Java"))
-
-	// Случайный язык
-	lang, _ := user.RandomFavoriteLanguage()
-	fmt.Println("Случайный любимый язык:", lang)
-
-	// Печатаем профиль
-	fmt.Println("\nПрофиль пользователя:")
-	fmt.Println(user.GenerateProfile())
-
-	// Обновляем имя
-	err = user.UpdateName("Иван", "Петров")
+	fmt.Printf("%+v\n", p1)
+	// p2 := model.Person{FirstName: "Pavel", Age: 35}  // можем не заметить если структура поменялась
+	p2, err := model.NewPerson("Pavel", "", 29)
 	if err != nil {
-		fmt.Println("Ошибка обновления имени:", err)
+		log.Fatalf("unable to create person: %v", err)
 	}
-
-	// Удаляем язык
-	err = user.RemoveFavoriteLanguage("Python")
-	if err != nil {
-		fmt.Println("Ошибка удаления:", err)
-	}
-
-	// Итоговый профиль
-	fmt.Println("\nОбновлённый профиль:")
-	fmt.Println(user.GenerateProfile())
-
-
+	fmt.Printf("%+v\n", p2)
+	
 }
+
+
+
+
+/*
+Создайте структуру Student, которая будет представлять студента с полями Name, Age, Grade и Email. 
+Реализуйте функцию-конструктор NewStudent, которая будет проверять следующие условия:
+	Поле Name не должно быть пустым.
+	Поле Age должно быть в определенном диапазоне.
+	Поле Grade должно быть в определенном диапазоне.
+	Если Age больше константы GreatAge, то Grade должен быть не ниже MinGradeAfterGreatAge.
+	Поле Email должно содержать символ @.
+	Если какое-либо условие не выполняется - возвращаем подходящую ошибку, указатель на структуру при этом, должен быть nil.
+*/
+const (
+	MinAge                = 15
+	MaxAge                = 80
+	MinGrade              = 1
+	MaxGrade              = 5
+	GreatAge              = 30
+	MinGradeAfterGreatAge = 3
+)
+
+var (
+	ErrEmptyName         = errors.New("name cannot be empty")
+	ErrTooYoung          = errors.New("too young")
+	ErrTooOld            = errors.New("too old")
+	ErrGradeOutOfRange   = errors.New("grade out of range")
+	ErrTooLowGradeForAge = errors.New("too low grade for age")
+	ErrIncorrectEmail    = errors.New("incorrect email")
+)
+
+type Student struct {
+	Name  string
+	Age   int
+	Grade int
+	Email string
+}
+
+func NewStudent(name string, age, grade int, email string) (*Student, error) {
+	if name == "" {return nil, ErrEmptyName}
+	if age < MinAge {return nil, ErrTooYoung}
+	if age > MaxAge {return nil, ErrTooOld}
+	if grade < MinGrade || grade > MaxGrade {return nil, ErrGradeOutOfRange}
+	if age > GreatAge && grade < MinGradeAfterGreatAge {return nil, ErrTooLowGradeForAge}
+	if !strings.Contains(email, "@") {return nil, ErrIncorrectEmail}
+
+	student := &Student{
+		Name: name,
+		Age: age,
+		Grade: grade,
+		Email: email,
+	}
+	return student, nil
+}
+
+
+
 
 /*
 Необходимо реализовать структуру User с определенными методами.
