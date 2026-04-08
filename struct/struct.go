@@ -6,13 +6,9 @@ import (
 	"slices"
 	"strconv"
 	"strings"
-	"yourgo/model"
-
-	// "strings"
+	// "yourgo/model"
 	"time"
 	"unicode"
-
-	// "strings"
 	"fmt"
 	"math/rand"
 )
@@ -210,23 +206,74 @@ func main() {
 	// fmt.Printf("New student has created %+v\n", *student)
 
 
-	// p1 := model.Person{FirstName: "Nurdin", Age: 35}  // {FirstName:Nurdin LastName: Age:35} lastname is empty
-	p1, err := model.NewPerson("Nurdin", "Isamailov", 20)
-	if err != nil {
-		log.Fatalf("unable to create person: %v", err)
-	}
-	fmt.Printf("%+v\n", p1)
-	// p2 := model.Person{FirstName: "Pavel", Age: 35}  // можем не заметить если структура поменялась
-	p2, err := model.NewPerson("Pavel", "", 29)
-	if err != nil {
-		log.Fatalf("unable to create person: %v", err)
-	}
-	fmt.Printf("%+v\n", p2)
+	// // p1 := model.Person{FirstName: "Nurdin", Age: 35}  // {FirstName:Nurdin LastName: Age:35} lastname is empty
+	// p1, err := model.NewPerson("Nurdin", "Isamailov", 20)
+	// if err != nil {
+	// 	log.Fatalf("unable to create person: %v", err)
+	// }
+	// fmt.Printf("%+v\n", p1)
+	// // p2 := model.Person{FirstName: "Pavel", Age: 35}  // можем не заметить если структура поменялась
+	// p2, err := model.NewPerson("Pavel", "", 29)
+	// if err != nil {
+	// 	log.Fatalf("unable to create person: %v", err)
+	// }
+	// fmt.Printf("%+v\n", p2)
+
 	
+	car := Car{
+		Engine: Engine{
+			Started: false,
+			HorsePower: 150,
+		},
+		Model: "Toyota",
+	}
+
+	if err := car.Drive(); err != nil {
+		log.Fatalf("drive car: %v", err)
+	}
+
+	if err := car.Start(); err != nil {
+		log.Fatalf("start car: %v", err)
+	}
+	fmt.Printf("Car is started, model %s, horsepower %d\n", car.Model, car.Engine.HorsePower)
+	fmt.Printf("%+v\n", car)
+
 }
 
+type Engine struct {
+	Started bool
+	HorsePower int
+}
 
+func (e *Engine) Start() error {  // dont forget pointer when you change value in the struct
+	if e.Started {
+		return errors.New("already started")
+	}
+	e.Started = true
+	return nil
+}
 
+type Car struct {
+	Engine Engine
+	Model string
+
+}
+
+func (c *Car) Start() error {  // Работаем не с копией. Если внутри метода меняется хотя бы одно поле (даже вложенное) → используй pointer receiver
+	if err := c.Engine.Start(); err != nil {
+		return fmt.Errorf("engine start: %w\n", err)
+	}
+	// стартуем другие сервисы
+	return nil
+}
+
+func (c Car) Drive() error {
+	if !c.Engine.Started {
+		return errors.New("engine not started")
+	}
+	// ...
+	return nil
+}
 
 /*
 Создайте структуру Student, которая будет представлять студента с полями Name, Age, Grade и Email. 
@@ -279,7 +326,6 @@ func NewStudent(name string, age, grade int, email string) (*Student, error) {
 	}
 	return student, nil
 }
-
 
 
 
