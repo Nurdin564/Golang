@@ -2,7 +2,7 @@ package main
 
 import (
 	"errors"
-	"log"
+	// "log"
 	"slices"
 	"strconv"
 	"strings"
@@ -220,25 +220,80 @@ func main() {
 	// fmt.Printf("%+v\n", p2)
 
 	
-	car := Car{
-		Engine: Engine{
-			Started: false,
-			HorsePower: 150,
-		},
-		Model: "Toyota",
-	}
+	// car := Car{
+	// 	Engine: Engine{
+	// 		Started: false,
+	// 		HorsePower: 150,
+	// 	},
+	// 	Model: "Toyota",
+	// }
 
-	if err := car.Drive(); err != nil {
-		log.Fatalf("drive car: %v", err)
-	}
+	// if err := car.Drive(); err != nil {
+	// 	log.Fatalf("drive car: %v", err)
+	// }
 
-	if err := car.Start(); err != nil {
-		log.Fatalf("start car: %v", err)
-	}
-	fmt.Printf("Car is started, model %s, horsepower %d\n", car.Model, car.Engine.HorsePower)
-	fmt.Printf("%+v\n", car)
+	// if err := car.Start(); err != nil {
+	// 	log.Fatalf("start car: %v", err)
+	// }
+	// fmt.Printf("Car is started, model %s, horsepower %d\n", car.Model, car.Engine.HorsePower)
+	// fmt.Printf("%+v\n", car)
 
+
+	s := []int{5, 2, 3, 8, 3}
+	fmt.Println(notUnique(s))
 }
+
+/*
+Разработать функцию generatePassword, которая будет генерировать уникальные пароли заданной длины
+с учетом определенных требований к содержимому пароля.
+Функция generatePassword должна принимать
+	length (int) - длина генерируемого пароля. Минимальная длина пароля должна составлять 4 символа.
+	count (int) - количество паролей, которые необходимо сгенерировать.
+Функция должна возвращать
+	Срез строк ([]string) со сгенерированными паролями.
+	Ошибку (error), если возникла проблема с входными параметрами (например, если длина пароля меньше 4 или количество паролей запрошено менее 1).
+Пароли должны содержать
+	По крайней мере одну заглавную букву (A-Z)
+	По крайней мере одну строчную букву (a-z)
+	По крайней мере одну цифру (0-9)
+	По крайней мере один специальный символ (например, !@#$%^&*)
+Пример использования функции
+	passwords, err := generatePassword(12, 5)
+	if err != nil {
+		// Обработка ошибки
+	}
+	fmt.Println(passwords) // Вывод сгенерированных паролей
+*/
+
+
+
+
+
+
+// func notUnique(s []int) bool {
+// 	m := make(map[int]int, len(s))
+// 	for i := range s {
+// 		val := s[i]
+// 		if _, ok := m[val]; ok {
+// 			return true
+// 		}
+// 		m[val] = val
+// 	}
+// 	return false
+// }
+
+func notUnique(s []int) bool {
+	m := make(map[int]struct{}, len(s))
+	for i := range s {
+		val := s[i]
+		if _, ok := m[val]; ok {  // если val есть в m, то ок = true. Значения слайса переносятся в ключи мапы. Есть ли ключ val в мапе m, если да то тру, если нет этому ключу присваиваем пустой стракт как значение
+			return true
+		}
+		m[val] = struct{}{}
+	}
+	return false
+}
+
 
 type Engine struct {
 	Started bool
