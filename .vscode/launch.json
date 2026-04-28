@@ -11,7 +11,7 @@
             "request": "launch",
             "mode": "auto",
             "console": "integratedTerminal",
-            "program": "${workspaceFolder}/Functions"
+            "program": "${workspaceFolder}/struct"
         }
     ]
 }

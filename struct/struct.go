@@ -14,6 +14,8 @@ import (
 )
 
 func main() {
+	// "%+v" - Выводит структуру с именами полей
+
 	// user := User{
 	// 	FirstName: "Nigga",
 	// 	LastName: "Shit",
@@ -238,10 +240,146 @@ func main() {
 	// fmt.Printf("Car is started, model %s, horsepower %d\n", car.Model, car.Engine.HorsePower)
 	// fmt.Printf("%+v\n", car)
 
+	// dog := Dog{
+	// 	Animal: Animal{
+	// 		Name: "Sharik",
+	// 	},
+	// 	Breed: "Gold retriver",
+	// }
+	// fmt.Printf("%+v\n", dog)
+	// dog.Bark()
+	// dog.Speak()
+	// fmt.Println(dog.Name)
+	// dog.Name = "Barsik"
+	// dog.Animal.Name = "Barsik"
+	// fmt.Printf("%+v\n", dog)
 
-	s := []int{5, 2, 3, 8, 3}
-	fmt.Println(notUnique(s))
+	// c := C{
+	// 	A: A{
+	// 		Prop: "PropA",
+	// 	},
+	// 	B: B{
+	// 		Prop: "PropB",
+	// 	},
+	// 	Prop: "PropC",
+	// }
+	// fmt.Println(c.A.Prop)
+	// fmt.Println(c.B.Prop)
+	// fmt.Println(c.Prop)  // PropC
+
+	// a := A{
+	// 	Prop: "Hello",
+	// }
+	// composition := Composition{
+	// 	A: a,
+	// }
+	// embedding := Embedding{
+	// 	// A: a,
+	// 	a,
+	// }
+	// fmt.Printf("%+v\n", composition)
+	// fmt.Printf("%+v\n", embedding)
+
+	// fmt.Println(composition.A.Prop)
+	// fmt.Println(embedding.A.Prop)
+	// fmt.Println(embedding.Prop)
+
+	// s := []int{5, 2, 3, 8, 3}
+	// fmt.Println(notUnique(s))
+
+	// passwords, err := generatePassword(12, 5)
+	// if err != nil {
+	// 	fmt.Println("Error:", err)
+	// 	return
+	// }
+	// fmt.Println("Generated passwords:", passwords) 
+
+
+	tm := NewTagManager()
+
+	// Добавление тегов
+	if err := tm.AddTag("golang"); err != nil {
+		fmt.Println(err)
+	}
+	if err := tm.AddTag("programming"); err != nil {
+		fmt.Println(err)
+	}
+	if err := tm.AddTag("golang"); err != nil {
+		fmt.Println(err) // Ошибка, тег уже существует
+	}
+
+	// Проверка существования тегов
+	fmt.Println("Тег 'golang' существует:", tm.TagExists("golang")) // true
+	fmt.Println("Тег 'python' существует:", tm.TagExists("python")) // false
+
+	// Список тегов
+	fmt.Println("Current tags:", tm.ListTags()) // [golang programming]
+
+	// Удаление тегов
+	if err := tm.RemoveTag("golang"); err != nil {
+		fmt.Println(err)
+	}
+	if err := tm.RemoveTag("golang"); err != nil {
+		fmt.Println(err) // Ошибка, тег не существует
+	}
+
+	// Список тегов после удаления
+	fmt.Println("Current tags after removal:", tm.ListTags()) // [programming]
 }
+
+/*
+Структура
+	Необходимо реализовать структуру TagManager с функцией-конструктором, 
+	которая управляет набором тегов и предоставляет методы для работы с ними.
+Методы
+	Метод AddTag(tag string) error, позволяет добавлять новый тег. Если тег уже существует, метод вернет ошибку.
+	Метод RemoveTag(tag string) error, позволяет удалять тег по его имени. Если тега не существует, метод вернет ошибку.
+	Метод TagExists(tag string) bool, позволяет проверять, существует ли тег в системе.
+	Метод ListTags() []string, который возвращает все уникальные теги в системе.
+Примечание
+	Для хранения тегов необходимо использовать map, где ключами будут выступать названия тегов, а значениями будут пустые структуры.
+*/
+
+type TagManager struct {
+	tags map[string]struct{}
+}
+
+func NewTagManager() *TagManager {
+	return &TagManager{
+		tags: make(map[string]struct{}),
+	}
+}
+
+func (tm *TagManager) TagExists(tag string) bool {
+	_, exists := tm.tags[tag]
+	return exists
+}
+
+func (tm *TagManager) AddTag(tag string) error {
+	if tm.TagExists(tag) {
+		return errors.New("tag already exists")
+	}
+	tm.tags[tag] = struct{}{}
+	return nil
+}
+
+func (tm *TagManager) RemoveTag(tag string) error {
+	if !tm.TagExists(tag) {
+		return errors.New("tag doesn't exist")
+	}
+	delete(tm.tags, tag)
+	return nil
+}
+
+func (tm *TagManager) ListTags() []string {
+	result := make([]string, 0, len(tm.tags))
+	for tag := range tm.tags {
+		result = append(result, tag)
+	}
+	return result
+}
+
+
 
 /*
 Разработать функцию generatePassword, которая будет генерировать уникальные пароли заданной длины
@@ -264,8 +402,62 @@ func main() {
 	}
 	fmt.Println(passwords) // Вывод сгенерированных паролей
 */
+const (
+	MinPasswordLength = 4
+	MinPasswordsCount = 1
+	MaxPasswordsCount = 50
+)
 
+var (
+	ErrPasswordLengthTooLow = errors.New("password length too low")
+	ErrPasswordsCountTooLow = errors.New("too low passwords count")
+	ErrPasswordsCountTooBig = errors.New("too big passwords count")
+)
 
+var (
+	upperChars   = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	lowerChars   = []rune("abcdefghijklmnopqrstuvwxyz")
+	digitChars   = []rune("0123456789")
+	specialChars = []rune("!@#$%^&*")
+)
+
+func generatePassword(length int, count int) ([]string, error) {
+	passwords := make([]string, count)
+
+	if length < MinPasswordLength {
+		return nil, ErrPasswordLengthTooLow
+	}
+	if count < MinPasswordsCount {
+		return  nil, ErrPasswordsCountTooLow
+	}
+	if count > MaxPasswordsCount {
+		return nil, ErrPasswordsCountTooBig
+	}
+
+	allChars := append(upperChars, lowerChars...)
+	allChars = append(allChars, digitChars...)
+	allChars = append(allChars, specialChars...)
+
+	for i := range passwords {
+		pwd := make([]rune, length)
+		pwd[0] = upperChars[rand.Intn(len(upperChars))]
+		pwd[1] = lowerChars[rand.Intn(len(lowerChars))]
+		pwd[2] = digitChars[rand.Intn(len(digitChars))]
+		pwd[3] = specialChars[rand.Intn(len(specialChars))]
+
+		for j := 4; j < length; j++ {
+			pwd[j] = allChars[rand.Intn(len(allChars))]
+		}
+
+		rand.Shuffle(length, func(a, b int) {
+			pwd[a], pwd[b] = pwd[b], pwd[a]
+		})
+
+		passwords[i] = string(pwd)
+	}
+
+	return passwords, nil
+}
 
 
 
@@ -295,6 +487,49 @@ func notUnique(s []int) bool {
 }
 
 
+type A struct {
+	Prop string
+}
+
+type Composition struct {
+	A A
+}
+
+type Embedding struct {
+	A
+}
+
+
+type Animal struct {
+	Name string
+}
+
+func (a Animal) Speak() {
+	fmt.Printf("%s издает звук\n", a.Name)
+}
+
+type Dog struct {
+	Animal
+	Breed string
+}
+
+func (d Dog) Bark() {
+	fmt.Println("Wof! :)")
+}
+
+// type A struct {
+// 	Prop string
+// }
+type B struct {
+	Prop string
+}
+type C struct {
+	A
+	B
+	Prop string
+}
+
+
 type Engine struct {
 	Started bool
 	HorsePower int
@@ -311,7 +546,6 @@ func (e *Engine) Start() error {  // dont forget pointer when you change value i
 type Car struct {
 	Engine Engine
 	Model string
-
 }
 
 func (c *Car) Start() error {  // Работаем не с копией. Если внутри метода меняется хотя бы одно поле (даже вложенное) → используй pointer receiver
