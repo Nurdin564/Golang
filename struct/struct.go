@@ -2,15 +2,18 @@ package main
 
 import (
 	"errors"
+	"log"
 	// "log"
 	"slices"
 	"strconv"
 	"strings"
+	"github.com/google/uuid"
 	// "yourgo/model"
-	"time"
-	"unicode"
 	"fmt"
 	"math/rand"
+	"time"
+	"unicode"
+	"yourgo/project"
 )
 
 func main() {
@@ -295,37 +298,100 @@ func main() {
 	// fmt.Println("Generated passwords:", passwords) 
 
 
-	tm := NewTagManager()
+	// tm := NewTagManager()
 
-	// Добавление тегов
-	if err := tm.AddTag("golang"); err != nil {
-		fmt.Println(err)
-	}
-	if err := tm.AddTag("programming"); err != nil {
-		fmt.Println(err)
-	}
-	if err := tm.AddTag("golang"); err != nil {
-		fmt.Println(err) // Ошибка, тег уже существует
+	// // Добавление тегов
+	// if err := tm.AddTag("golang"); err != nil {
+	// 	fmt.Println(err)
+	// }
+	// if err := tm.AddTag("programming"); err != nil {
+	// 	fmt.Println(err)
+	// }
+	// if err := tm.AddTag("golang"); err != nil {
+	// 	fmt.Println(err) // Ошибка, тег уже существует
+	// }
+
+	// // Проверка существования тегов
+	// fmt.Println("Тег 'golang' существует:", tm.TagExists("golang")) // true
+	// fmt.Println("Тег 'python' существует:", tm.TagExists("python")) // false
+
+	// // Список тегов
+	// fmt.Println("Current tags:", tm.ListTags()) // [golang programming]
+
+	// // Удаление тегов
+	// if err := tm.RemoveTag("golang"); err != nil {
+	// 	fmt.Println(err)
+	// }
+	// if err := tm.RemoveTag("golang"); err != nil {
+	// 	fmt.Println(err) // Ошибка, тег не существует
+	// }
+
+	// // Список тегов после удаления
+	// fmt.Println("Current tags after removal:", tm.ListTags()) // [programming]
+
+
+
+	// Создаем проект
+	pr, err := project.New(uuid.New(), "Проект 1")
+	if err != nil {
+		log.Fatalf("create project error: %v\n", err)
 	}
 
-	// Проверка существования тегов
-	fmt.Println("Тег 'golang' существует:", tm.TagExists("golang")) // true
-	fmt.Println("Тег 'python' существует:", tm.TagExists("python")) // false
-
-	// Список тегов
-	fmt.Println("Current tags:", tm.ListTags()) // [golang programming]
-
-	// Удаление тегов
-	if err := tm.RemoveTag("golang"); err != nil {
-		fmt.Println(err)
+	// Создаем задачу 1 для проекта 1
+	tk1, err := project.NewTask(uuid.New(), "Задача 1", "Описание важной задачи №1")
+	if err != nil {
+		log.Fatalf("create task error: %v\n", err)
 	}
-	if err := tm.RemoveTag("golang"); err != nil {
-		fmt.Println(err) // Ошибка, тег не существует
+	// Добавляем задачу в проект 1
+	if err := pr.AddTask(*tk1); err != nil {
+		log.Fatalf("add task to project error: %v\n", err)
 	}
 
-	// Список тегов после удаления
-	fmt.Println("Current tags after removal:", tm.ListTags()) // [programming]
+	// Создаем задачу 2 для проекта 1
+	tk2, err := project.NewTask(uuid.New(), "Задача 2", "Описание важной задачи №2")
+	if err != nil {
+		log.Fatalf("create task error: %v\n", err)
+	}
+	// Добавляем задачу в проект 1
+	if err := pr.AddTask(*tk2); err != nil {
+		log.Fatalf("add task to project error: %v\n", err)
+	}
+
+	// Просматриваем данные проекта
+	pr.PrintInfo()
+
+	fmt.Println("---")
+
+	// Обновляем описание задачи 1
+	if err := tk1.UpdateDescription("Новое описание важной задачи №2"); err != nil {
+		log.Fatalf("task update description error: %v\n", err)
+	}
+	// Обновляем задачу в проекте
+	if err := pr.UpdateTask(*tk1); err != nil {
+		log.Fatalf("update task error: %v\n", err)
+	}
+
+	// Закрываем задачу 2
+	if err := tk2.Close(); err != nil {
+		log.Fatalf("task close error: %v\n", err)
+	}
+	// Обновляем задачу в проекте
+	if err := pr.UpdateTask(*tk2); err != nil {
+		log.Fatalf("update task error: %v\n", err)
+	}
+
+	// Просматриваем данные проекта
+	pr.PrintInfo()
+
+	fmt.Println("---")
+
+	// Отображаем только закрытые задачи
+	fmt.Println("Закрытые задачи проекта:")
+	for _, task := range pr.FilterTasksByStatus(project.StatusClosed) {
+		fmt.Printf("Задача: %s, Описание: %s, Статус: %s\n", task.Title, task.Description, task.Status)
+	}	
 }
+
 
 /*
 Структура
