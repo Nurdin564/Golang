@@ -92,17 +92,24 @@ func main() {
 	// actionStr(South)  // action South
 
 
-	user := User{
-		ID: 2,
-		Firstname: "Pavel",
-	}
-	product := Product{
-		ID: 5,
-		Title: "Pencil",
-	}
-	fmt.Println(user)  // {UserID-2 Pavel}
-	fmt.Println(product)  // {ProductID-5 Pencil}
+	// user := User{
+	// 	ID: 2,
+	// 	Firstname: "Pavel",
+	// }
+	// product := Product{
+	// 	ID: 5,
+	// 	Title: "Pencil",
+	// }
+	// fmt.Println(user)  // {UserID-2 Pavel}
+	// fmt.Println(product)  // {ProductID-5 Pencil}
+
+
+
 }
+
+
+
+
 
 type UserId int
 
